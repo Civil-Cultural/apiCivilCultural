@@ -1,21 +1,21 @@
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class AuthorValidator {
-	constructor(protected ctx: HttpContextContract) {
-	}
+export default class AuthorUpdateValidator {
+  constructor (protected ctx: HttpContextContract) {
+  }
 
 	public reporter = validator.reporters.api
 
 	public schema = schema.create({
-		name: schema.string(
-			{ escape: true, trim: true }
+		name: schema.string.optional(
+			{ trim: true }
 		),
-		email: schema.string(
+		email: schema.string.optional(
 			{ trim: true },
 			[rules.email({ ignoreMaxLength: true })]
 		),
-		password: schema.string(
+		password: schema.string.optional(
 			{ trim: true },
 		),
 		description: schema.string.optional(

@@ -10,10 +10,10 @@ export default class PageValidator {
 
   public schema = schema.create({
 		page: schema.number.optional(
-			[ rules.unsigned(), rules.range(1,4), ]
+			[ rules.unsigned() ]
 		),
 		perPage: schema.number.optional(
-			[ rules.unsigned(), rules.range(1,4),  ]
+			[ rules.unsigned() ]
 		),
   })
 

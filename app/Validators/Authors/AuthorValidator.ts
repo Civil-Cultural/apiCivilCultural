@@ -1,21 +1,21 @@
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class AuthorUpdateValidator {
-  constructor (protected ctx: HttpContextContract) {
-  }
+export default class AuthorValidator {
+	constructor(protected ctx: HttpContextContract) {
+	}
 
 	public reporter = validator.reporters.api
 
 	public schema = schema.create({
-		name: schema.string.optional(
-			{ escape: true, trim: true }
+		name: schema.string(
+			{ trim: true }
 		),
-		email: schema.string.optional(
+		email: schema.string(
 			{ trim: true },
 			[rules.email({ ignoreMaxLength: true })]
 		),
-		password: schema.string.optional(
+		password: schema.string(
 			{ trim: true },
 		),
 		description: schema.string.optional(
@@ -28,8 +28,7 @@ export default class AuthorUpdateValidator {
 	})
 
 	public messages = {
-		required: "{{ field }} Required field",
-		string: "{{ field }} Not a string",
-		alpha: "{{ field }} can only contain letters and spaces"
+		required: "{{ field }} required field",
+		string: "{{ field }} not a string",
 	}
 }

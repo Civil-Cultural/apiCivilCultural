@@ -15,6 +15,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 
   public async handle(err: any, { response }: HttpContextContract): Promise<void>
   {
-    if(err.status) response.json({code: err.status, mgs: err.body }) 
+    const { status, body } = err
+    if(err.status) response.json({ status: status, mgs: body }) 
   }
 }
