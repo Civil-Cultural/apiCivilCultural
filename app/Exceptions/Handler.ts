@@ -6,7 +6,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
 
   protected statusJson: object = {
     "404": "NOT FOUNT",
-    "501...599": "Serve error"
+    "501": "Serve error",
   }
 
   constructor () {

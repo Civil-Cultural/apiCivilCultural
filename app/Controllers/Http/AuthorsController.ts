@@ -1,62 +1,111 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
-import HealthCheck from '@ioc:Adonis/Core/HealthCheck'
+
 import Author from '@ioc:Adonis/Lucid/Database'
-import AuthorValidator from '../../Validators/AuthorValidator'
+
+import HandlerError from 'Contracts/HandlerError' 
+
+import AuthorValidator from 'App/Validators/AuthorValidator'
+import PageValidator from 'App/Validators/PageValidator'
+import ByIdValidator from 'App/Validators/ByIdValidator'
+import AuthorUpdateValidator from 'App/Validators/AuthorUpdateValidator' 
+
 
 export default class AuthorsController implements ResourceMethods {
+
+  private handlerError({ error, response }: HandlerError): void 
+  {
+    if (["syscall", "address", "port"].every(key => key in error))
+      response.internalServerError(error.errno)
+    else
+      response.badRequest({ error })
+  }
 
   public async index({ request, response }: HttpContextContract): Promise<void> 
   {
     try {
-      await request.validate(AuthorValidator)
       const { page = 1, perPage = 10 } = request.params()
 
-      const authors = await Author.query().from("authors").paginate(page, perPage)
+      await request.validate(PageValidator)
+      const authors = await Author
+        .from("authors")
+        .paginate(page, perPage)
 
-      console.log(authors)
       response.ok(authors.toJSON())
     } catch (error) {
-      console.log(error)
-      response.unprocessableEntity({ status: 422, error: "Unprocessable Entity" })
+      this.handlerError({ error, response })
     }
-  }
-
-  public async create(ctx: HttpContextContract): Promise<void> {
   }
 
   public async store({ request, response }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(AuthorValidator)
-      
+
       const [id] = await Author
         .table("authors")
         .returning("id")
         .insert(request.all())
 
-      console.info(id)
-      response.ok({ status: 200, data: { id } })
+      response.ok({ data: { id } })
 
     } catch (error) {
-      console.log(error)
-      response.unprocessableEntity({ status: 422, error: "Unprocessable Entity" })
+      if (["syscall", "address", "port"].every(key => key in error))
+        response.internalServerError(error.errno)
+      else
+        response.badRequest({ error })
     }
   }
 
-  public async show(ctx: HttpContextContract): Promise<void> { }
+  public async show({ request, response, params }: HttpContextContract): Promise<void> 
+  {
+    try {
+      await request.validate(ByIdValidator)
 
-  public async edit(ctx: HttpContextContract): Promise<void> { }
+      let authors = await Author
+        .from("authors")
+        .select("*")
+        .where("id", params.id)
 
-  public async update(ctx: HttpContextContract): Promise<void> { }
+      response.status(200).json(authors || {})
 
-  public async destroy(ctx: HttpContextContract): Promise<void> { }
+    } catch (error) {
+      this.handlerError({ error, response })
+    }
+  }
 
-  public async testDB({ response }: HttpContextContract): Promise<void> {
-    const { report, healthy } = await HealthCheck.getReport()
+  public async update({ request, response, params }: HttpContextContract): Promise<void> 
+  {
+    try {
+      await request.validate(ByIdValidator)
+      await request.validate(AuthorUpdateValidator)
 
-    return healthy ?
-      response.ok({ connection: "ok", message: report.lucid.health.message }) :
-      response.badRequest({ connection: "error", message: report.lucid.health.message })
+      let authorUpdate = await Author
+        .from("authors")
+        .where("id", params.id)
+        .update(request.all())
+
+      response.status(200).json((authorUpdate) ? { updated: true } : { updated: false })
+
+    } catch (error) {
+      this.handlerError({ error, response })
+    }
+  }
+
+  public async destroy({ request, response, params }: HttpContextContract): Promise<void> 
+  {
+    try {
+      await request.validate(ByIdValidator)
+
+      let authorDestroy = await Author
+      .from("authors")
+      .where("id", params.id)
+      .delete()
+
+      response.status(200).json( (authorDestroy) ? { deleted: true } : { deleted: false })
+
+    } catch (error) {
+      this.handlerError({ error, response })
+    }
   }
 }

@@ -5,14 +5,10 @@ declare module '@ioc:Adonis/Core/Resource' {
   interface ResourceMethods {
     index(ctx: HttpContextContract): Promise<any>
 
-    create(ctx: HttpContextContract): Promise<any>
-
     store(ctx: HttpContextContract): Promise<any>
 
     show(ctx: HttpContextContract): Promise<any>
-
-    edit(ctx: HttpContextContract): Promise<any>
-
+    
     update(ctx: HttpContextContract): Promise<any>
 
     destroy(ctx: HttpContextContract): Promise<any>
