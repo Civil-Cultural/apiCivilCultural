@@ -21,15 +21,13 @@ export default class AuthorUpdateValidator {
 		description: schema.string.optional(
 			{ trim: true }
 		),
-		work_career: schema.string.optional(
+		workCareer: schema.string.optional(
 			{ trim: true }
 		),
 
 	})
 
 	public messages = {
-		required: "{{ field }} Required field",
-		string: "{{ field }} Not a string",
-		alpha: "{{ field }} can only contain letters and spaces"
+		string: "{{ field }} Not a string"
 	}
 }

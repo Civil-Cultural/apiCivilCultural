@@ -21,7 +21,7 @@ export default class AuthorValidator {
 		description: schema.string.optional(
 			{ trim: true }
 		),
-		work_career: schema.string.optional(
+		workCareer: schema.string.optional(
 			{ trim: true }
 		),
 

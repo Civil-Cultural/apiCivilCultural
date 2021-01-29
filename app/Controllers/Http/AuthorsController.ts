@@ -1,37 +1,28 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
 
-import Authors from '@ioc:Adonis/Lucid/Database'
-
-import HandlerError from 'Contracts/handlerError' 
-
+import Author from 'App/Models/Author'
+import LogicException from 'App/Exceptions/LogicException'
 import PageValidator from 'App/Validators/PageValidator'
 import ByIdValidator from 'App/Validators/ByIdValidator'
 import AuthorValidator from 'App/Validators/Authors/AuthorValidator'
 import AuthorUpdateValidator from 'App/Validators/Authors/AuthorUpdateValidator' 
 
 
-export default class AuthorsController implements ResourceMethods {
+export default class AuthorsController  implements ResourceMethods {
 
-  private handlerError({ error, response }: HandlerError): void 
-  {
-    if (["syscall", "address", "port"].every(key => key in error))
-      response.internalServerError(error.errno)
-    else
-      response.badRequest({ error })
-  }
-
-  public async index({ request, response, params: { page = 1, perPage = 10 } }: HttpContextContract): Promise<void> 
+  public async index({ request, response, params: { page, perPage } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(PageValidator)
-      const authors = await Authors
-        .from("authors")
+      const authors = await Author
+        .query()
+        .select("*")
         .paginate(page, perPage)
 
-      response.ok(authors.toJSON())
+      response.ok(authors)
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error)
     }
   }
 
@@ -40,18 +31,11 @@ export default class AuthorsController implements ResourceMethods {
     try {
       await request.validate(AuthorValidator)
 
-      const [id] = await Authors
-        .table("authors")
-        .returning("id")
-        .insert(request.all())
-
-      response.ok({ data: { id } })
-
+      const author: Author = await Author.create(Object(request.all()))
+      
+      response.ok(author)
     } catch (error) {
-      if (["syscall", "address", "port"].every(key => key in error))
-        response.internalServerError(error.errno)
-      else
-        response.badRequest({ error })
+      throw new LogicException(error, 400)
     }
   }
 
@@ -60,15 +44,12 @@ export default class AuthorsController implements ResourceMethods {
     try {
       await request.validate(ByIdValidator)
 
-      const authorsShow = await Authors
-        .from("authors")
-        .select("*")
-        .where("id", params.id)
+      const author: Author = await Author.findOrFail(params.id)
 
-      response.status(200).json(authorsShow || {})
+      response.ok(author)
 
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error, 404)
     }
   }
 
@@ -78,15 +59,17 @@ export default class AuthorsController implements ResourceMethods {
       await request.validate(ByIdValidator)
       await request.validate(AuthorUpdateValidator)
 
-      const authorUpdate = await Authors
-        .from("authors")
-        .where("id", params.id)
-        .update(request.all())
+      const props = request.all()
+      const authorUpdated: Author = await Author.findOrFail(params.id)
+      
+      for(let i in props)
+        authorUpdated[i] = props[i]    
 
-      response.status(200).json(authorUpdate ? { updated: true } : { updated: false })
+      authorUpdated.save()
+      response.ok(authorUpdated)
 
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error, 404)
     }
   }
 
@@ -95,15 +78,12 @@ export default class AuthorsController implements ResourceMethods {
     try {
       await request.validate(ByIdValidator)
 
-      const authorDestroy = await Author
-      .from("authors")
-      .where("id", params.id)
-      .delete()
+      await (await Author.findOrFail(params.id)).delete()
 
-      response.status(200).json( (authorDestroy) ? { deleted: true } : { deleted: false })
+      response.ok({ deleted: true })
 
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error, 404)
     }
   }
 }

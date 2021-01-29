@@ -16,5 +16,7 @@ export default class CategoryUpdateValidator {
 		)
   })
 
-  public messages = {}
+  public messages = {
+		string: "{{ field }} Not a string"
+	}
 }

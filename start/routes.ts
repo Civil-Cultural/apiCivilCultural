@@ -15,7 +15,8 @@ const URLS: Array<PropsUrl> = [
   {url: "topic", controller: "TopicsController"},
 ]
 
-Route.group((): void => {
+Route.group((): void => 
+{
   
   /**
    * @summary Rotas prédefinidas 
@@ -41,6 +42,9 @@ Route.group((): void => {
     /**
      * @summary Rota de teste de conexão
      */
+  Route
+    .get("/", async ({ response }: HttpContextContract ): Promise<void> =>  response.json({ status: "ok"}))
+    .as("status")
   Route
     .get("health", async ({ response }: HttpContextContract): Promise<void> => 
     {

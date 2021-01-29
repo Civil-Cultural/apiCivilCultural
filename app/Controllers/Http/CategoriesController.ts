@@ -1,10 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
 
-import Categories from '@ioc:Adonis/Lucid/Database'
 
-import HandlerError from 'Contracts/handlerError'
-
+import Category from 'App/Models/Category'
+import LogicException from 'App/Exceptions/LogicException'
 import PageValidator from 'App/Validators/PageValidator'
 import ByIdValidator from 'App/Validators/ByIdValidator'
 import CategoryValidator from 'App/Validators/Categories/CategoryValidator'
@@ -12,25 +11,19 @@ import CategoryUpdateValidator from 'App/Validators/Categories/CategoryUpdateVal
 
 export default class CategoriesController implements ResourceMethods {
 
-  private handlerError({ error, response }: HandlerError): void 
-  {
-    if (["syscall", "address", "port"].every(key => key in error))
-      response.internalServerError(error.errno)
-    else
-      response.badRequest({ error })
-  }
-
-  public async index({ request, response, params: { page = 1, perPage = 10 } }: HttpContextContract): Promise<void> 
+  public async index({ request, response, params: { page, perPage } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(PageValidator)
-      const categories = await Categories
-        .from("categories")
+
+      const categories = await Category
+        .query()
+        .select("*")
         .paginate(page, perPage)
 
-      response.ok(categories.toJSON())
+      response.ok(categories)
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error)
     }
   }
 
@@ -38,15 +31,12 @@ export default class CategoriesController implements ResourceMethods {
   {
     try {
       await request.validate(CategoryValidator)
-      const [id] = await Categories
-        .table("categories")
-        .returning("id")
-        .insert(request.all())
+      const category: Category = await Category.create(Object(request.all()))
 
-      response.ok({ data: { id } })
+      response.ok(category)
 
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error, 400)
     }
   }
 
@@ -54,15 +44,12 @@ export default class CategoriesController implements ResourceMethods {
   {
     try {
       await request.validate(ByIdValidator)
-      let categoryShow = await Categories
-        .from("categories")
-        .select("*")
-        .where("id", params.id)
+      let categoryShow: Category = await Category.findOrFail(params.id)
 
-      response.status(200).json(categoryShow || {})
+      response.status(200).json(categoryShow)
 
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error, 404)
     }
   }
 
@@ -72,15 +59,17 @@ export default class CategoriesController implements ResourceMethods {
       await request.validate(ByIdValidator)
       await request.validate(CategoryUpdateValidator)
 
-      const categoryUpdate = await Categories
-        .from("categories")
-        .where("id", params.id)
-        .update(request.all())
+      const props = request.all()
+      const categoryUpdate: Category = await Category.findOrFail(params.id)
+        
+      for(let i in props)
+          categoryUpdate[i] = props[i]
 
-      response.status(200).json( categoryUpdate ? { updated: true }: { updated: false })
+      categoryUpdate.save()
+      response.ok(categoryUpdate)
 
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error, 404)
     }
   }
 
@@ -89,15 +78,12 @@ export default class CategoriesController implements ResourceMethods {
     try {
       await request.validate(ByIdValidator)
 
-      const categoryUpdate = await Categories
-        .from("categories")
-        .where("id", params.id)
-        .delete()
+     await (await Category.findOrFail(params.id)).delete()
 
-      response.status(200).json( categoryUpdate ? { deleted: true }: { deleted: false })
+      response.ok({ deleted: true })
 
     } catch (error) {
-      this.handlerError({ error, response })
+      throw new LogicException(error, 404)
     }
   }
 }
