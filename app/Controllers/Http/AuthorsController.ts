@@ -1,8 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
 
-import Author from 'App/Models/Author'
 import LogicException from 'App/Exceptions/LogicException'
+
+import Author from 'App/Models/Author'
 import PageValidator from 'App/Validators/PageValidator'
 import ByIdValidator from 'App/Validators/ByIdValidator'
 import AuthorValidator from 'App/Validators/Authors/AuthorValidator'
@@ -22,7 +23,7 @@ export default class AuthorsController  implements ResourceMethods {
 
       response.ok(authors)
     } catch (error) {
-      throw new LogicException(error)
+      throw new LogicException(error.message, 400)
     }
   }
 
@@ -35,32 +36,32 @@ export default class AuthorsController  implements ResourceMethods {
       
       response.ok(author)
     } catch (error) {
-      throw new LogicException(error, 400)
+      throw new LogicException(error.message, 400)
     }
   }
 
-  public async show({ request, response, params }: HttpContextContract): Promise<void> 
+  public async show({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(ByIdValidator)
 
-      const author: Author = await Author.findOrFail(params.id)
+      const author: Author = await Author.findOrFail(id)
 
       response.ok(author)
 
     } catch (error) {
-      throw new LogicException(error, 404)
+      throw new LogicException(error.message, 404)
     }
   }
 
-  public async update({ request, response, params }: HttpContextContract): Promise<void> 
+  public async update({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(ByIdValidator)
       await request.validate(AuthorUpdateValidator)
 
       const props = request.all()
-      const authorUpdated: Author = await Author.findOrFail(params.id)
+      const authorUpdated:Author = await Author.findOrFail(id)
       
       for(let i in props)
         authorUpdated[i] = props[i]    
@@ -69,21 +70,21 @@ export default class AuthorsController  implements ResourceMethods {
       response.ok(authorUpdated)
 
     } catch (error) {
-      throw new LogicException(error, 404)
+      throw new LogicException(error.message, 404)
     }
   }
 
-  public async destroy({ request, response, params }: HttpContextContract): Promise<void> 
+  public async destroy({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(ByIdValidator)
 
-      await (await Author.findOrFail(params.id)).delete()
+      await (await Author.findOrFail(id)).delete()
 
       response.ok({ deleted: true })
 
     } catch (error) {
-      throw new LogicException(error, 404)
+      throw new LogicException(error.message, 404)
     }
   }
 }

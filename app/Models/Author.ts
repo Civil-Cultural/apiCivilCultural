@@ -1,6 +1,7 @@
-import { BaseModel, beforeSave, column } from '@ioc:Adonis/Lucid/Orm'
 import { DateTime } from 'luxon'
+import { BaseModel, beforeSave, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Hash from '@ioc:Adonis/Core/Hash'
+import Publications from 'App/Models/Publication'
 
 export default class Author extends BaseModel {
   public static table = 'authors'
@@ -26,7 +27,10 @@ export default class Author extends BaseModel {
   public workCareer?: string
 
   @column.dateTime({ autoCreate: true })
-  public createAt: DateTime
+  public createdAt: DateTime
+
+  @hasMany(() => Publications)
+  public publications: HasMany<typeof Publications>
 
   @beforeSave()
   public static async hashPassword(author: Author) 

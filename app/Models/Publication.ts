@@ -4,7 +4,7 @@ import { BaseModel, BelongsTo, belongsTo, column, ManyToMany, manyToMany } from 
 import Author from 'App/Models/Author' 
 import Category from 'App/Models/Category'
 import Topic from 'App/Models/Topic'
-import { TypePublicationseEnum } from "Contracts/models"
+import { TypePublicationsEnum } from "Contracts/models"
 
 export default class Publication extends BaseModel {
   public static table = "publications"
@@ -32,14 +32,8 @@ export default class Publication extends BaseModel {
   @column()
   public typePublication: TypePublicationsEnum
 
-  @belongsTo(() => Author)
-  public author: BelongsTo<typeof Author>
-
-  @manyToMany(() => Category)
-  public categories: ManyToMany<typeof Category>
-
-  @manyToMany(() => Topic)
-  public topics: ManyToMany<typeof Topic>
+  @column()
+  public authorId: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

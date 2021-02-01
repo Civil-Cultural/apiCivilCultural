@@ -1,9 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
 
+import LogicException from 'App/Exceptions/LogicException'
 
 import Category from 'App/Models/Category'
-import LogicException from 'App/Exceptions/LogicException'
 import PageValidator from 'App/Validators/PageValidator'
 import ByIdValidator from 'App/Validators/ByIdValidator'
 import CategoryValidator from 'App/Validators/Categories/CategoryValidator'
@@ -23,7 +23,7 @@ export default class CategoriesController implements ResourceMethods {
 
       response.ok(categories)
     } catch (error) {
-      throw new LogicException(error)
+      throw new LogicException(error.message, 400)
     }
   }
 
@@ -36,31 +36,31 @@ export default class CategoriesController implements ResourceMethods {
       response.ok(category)
 
     } catch (error) {
-      throw new LogicException(error, 400)
+      throw new LogicException(error.message, 400)
     }
   }
 
-  public async show({ request, response, params }: HttpContextContract): Promise<void> 
+  public async show({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(ByIdValidator)
-      let categoryShow: Category = await Category.findOrFail(params.id)
+      let categoryShow: Category = await Category.findOrFail(id)
 
       response.status(200).json(categoryShow)
 
     } catch (error) {
-      throw new LogicException(error, 404)
+      throw new LogicException(error.message, 404)
     }
   }
 
-  public async update({ request, response, params }: HttpContextContract): Promise<void> 
+  public async update({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   { 
     try {
       await request.validate(ByIdValidator)
       await request.validate(CategoryUpdateValidator)
 
       const props = request.all()
-      const categoryUpdate: Category = await Category.findOrFail(params.id)
+      const categoryUpdate: Category = await Category.findOrFail(id)
         
       for(let i in props)
           categoryUpdate[i] = props[i]
@@ -69,21 +69,21 @@ export default class CategoriesController implements ResourceMethods {
       response.ok(categoryUpdate)
 
     } catch (error) {
-      throw new LogicException(error, 404)
+      throw new LogicException(error.message, 404)
     }
   }
 
-  public async destroy({ request, response, params }: HttpContextContract): Promise<void> 
+  public async destroy({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   { 
     try {
       await request.validate(ByIdValidator)
 
-     await (await Category.findOrFail(params.id)).delete()
+     await (await Category.findOrFail(id)).delete()
 
       response.ok({ deleted: true })
 
     } catch (error) {
-      throw new LogicException(error, 404)
+      throw new LogicException(error.message, 404)
     }
   }
 }

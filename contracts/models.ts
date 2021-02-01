@@ -1,4 +1,4 @@
-export enum TypePublicationseEnum {
+export enum TypePublicationsEnum {
   NEWS = 1,
-  ARTICLE = 2
+  ARTICLE
 }

@@ -28,6 +28,6 @@ export default class AuthorUpdateValidator {
 	})
 
 	public messages = {
-		string: "{{ field }} Not a string"
+		string: "{{ field }} not a string"
 	}
 }

@@ -7,7 +7,7 @@ import { Exception } from '@poppinss/utils'
 export default class ExceptionHandler extends HttpExceptionHandler {
 
   protected statusJson: object = {
-    400: "The request does not conform to the expected format. Check the JSON (body) being sent",
+    400: "The request does not conform to the expected format. Check the JSON (body | head) being sent",
     401: "The authentication data is incorrect",
     403: "You are trying to access a resource that you do not have permission",
     404: "You are trying to access a resource that does not exist",

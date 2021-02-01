@@ -12,7 +12,7 @@ type errorStatusDB = {
 export default class LogicException extends Exception {
 
   constructor(
-    errorMsg: string | object,
+    errorMsg: string | errorStatusDB,
     status?: number | undefined,
     code?: string | undefined
   ) {

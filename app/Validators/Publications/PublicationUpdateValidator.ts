@@ -1,6 +1,6 @@
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { TypePublicationseEnum } from "Contracts/models"
+import { TypePublicationsEnum } from "Contracts/models"
 
 export default class PublicationUpdateValidator {
   constructor (protected ctx: HttpContextContract) {
@@ -32,7 +32,7 @@ export default class PublicationUpdateValidator {
     }),
 
     typePublication: schema.enum.optional(
-      Object.values(TypePublicationseEnum) as Array<number>
+      Object.values(TypePublicationsEnum) as Array<number>
     ),
 
     author: schema.string.optional({

@@ -1,6 +1,6 @@
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { TypePublicationseEnum } from "Contracts/models"
+import { TypePublicationsEnum } from "Contracts/models"
 
 export default class PublicationValidator {
 
@@ -33,20 +33,20 @@ export default class PublicationValidator {
     }),
 
     typePublication: schema.enum(
-      Object.values(TypePublicationseEnum) as Array<number>
+      Object.values(TypePublicationsEnum)
     ),
 
     author: schema.string({
       trim: true
     }),
 
-    category: schema.array().members(
-      schema.number()
-    ),
+    category: schema.number([
+      rules.unsigned()
+    ]),
 
-    topic: schema.array().members(
-      schema.number()
-    )
+    topic: schema.number([
+      rules.unsigned()
+    ])
   })
 
   public messages = {

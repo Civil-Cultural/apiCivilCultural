@@ -9,10 +9,10 @@ const BASE_ALIAS: string = "api"
 
 
 const URLS: Array<PropsUrl> = [
-  {url: "author", controller: "AuthorsController"},
-  {url: "category", controller: "CategoriesController"},
-  {url: "publication", controller: "PublicationsController"},
-  {url: "topic", controller: "TopicsController"},
+  {url: "authors", controller: "AuthorsController"},
+  {url: "categories", controller: "CategoriesController"},
+  {url: "publications", controller: "PublicationsController"},
+  {url: "topics", controller: "TopicsController"},
 ]
 
 Route.group((): void => 

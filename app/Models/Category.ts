@@ -1,4 +1,6 @@
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import Publications from 'App/Models/Publication'
+
 
 export default class Category extends BaseModel {
   public static table = 'categories'
@@ -6,7 +8,7 @@ export default class Category extends BaseModel {
   public static connection = 'pg'
 
   @column({ isPrimary: true })
-  public id: string
+  public id: number
 
   @column()
   public name: string
@@ -14,4 +16,9 @@ export default class Category extends BaseModel {
   @column()
   public description: string
 
+  @manyToMany(() => Publications, {
+    pivotForeignKey: "category_id",
+    pivotRelatedForeignKey: "publication_id"
+  })
+  public publications: ManyToMany<typeof Publications>
 }

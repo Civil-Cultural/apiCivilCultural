@@ -2,11 +2,10 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
 
 import LogicException from 'App/Exceptions/LogicException'
+
 import Publication from 'App/Models/Publication'
 import PageValidator from 'App/Validators/PageValidator'
 import PublicationValidator from 'App/Validators/Publications/PublicationValidator'
-import PublicationUpdateValidator from 'App/Validators/Publications/PublicationUpdateValidator'
-
 
 export default class PublicationsController implements ResourceMethods {
   
@@ -22,7 +21,7 @@ export default class PublicationsController implements ResourceMethods {
         
       response.ok(publications)
     } catch (error) {
-      throw new LogicException(error)
+      throw new LogicException(error.message, 400)
     }
   }
 
@@ -36,20 +35,20 @@ export default class PublicationsController implements ResourceMethods {
       response.ok(publication)
       
     } catch (error) {
-      throw new LogicException(error, 400)
+      throw new LogicException(error.message, 400)
     }
   }
 
-  public async show({ request, response, params }: HttpContextContract): Promise<void>
+  public async show({ request, response, params: { id } }: HttpContextContract): Promise<void>
   {
     try {
 
-      const publication: Publication = await Publication.firstOrFail(params.id)
+      const publication: Publication = await Publication.firstOrFail(id)
 
       response.ok(publication)
       
     } catch (error) {
-      throw new LogicException(error, 404)
+      throw new LogicException(error.message, 404)
     }
   }
 
@@ -58,7 +57,7 @@ export default class PublicationsController implements ResourceMethods {
     try {
       
     } catch (error) {
-      throw new LogicException(error)
+      throw new LogicException(error.message, 404)
     }
   }
 
@@ -67,7 +66,7 @@ export default class PublicationsController implements ResourceMethods {
     try {
       
     } catch (error) {
-      throw new LogicException(error)
+      throw new LogicException(error.message, 404)
     }
   }
 }
