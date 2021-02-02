@@ -1,9 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-import Author from 'App/Models/Author' 
-import Category from 'App/Models/Category'
-import Topic from 'App/Models/Topic'
 import { TypePublicationsEnum } from "Contracts/models"
 
 export default class Publication extends BaseModel {
@@ -25,6 +22,9 @@ export default class Publication extends BaseModel {
 
   @column()
   public image: string
+
+  @column()
+  public video: string
 
   @column()
   public text: string

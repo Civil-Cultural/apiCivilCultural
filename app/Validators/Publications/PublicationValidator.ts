@@ -14,7 +14,7 @@ export default class PublicationValidator {
       trim: true
     }),
 
-    subTitle: schema.string({
+    subtitle: schema.string({
       trim: true
     }),
 
@@ -36,15 +36,15 @@ export default class PublicationValidator {
       Object.values(TypePublicationsEnum)
     ),
 
-    author: schema.string({
+    authorId: schema.string({
       trim: true
     }),
 
-    category: schema.number([
+    categoryId: schema.number([
       rules.unsigned()
     ]),
 
-    topic: schema.number([
+    topicId: schema.number([
       rules.unsigned()
     ])
   })

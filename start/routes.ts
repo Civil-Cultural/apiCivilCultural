@@ -1,10 +1,9 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Route from '@ioc:Adonis/Core/Route'
 import HealthCheck from '@ioc:Adonis/Core/HealthCheck'
+import { PropsUrl } from 'Contracts/routes'
 
-type PropsUrl = {url: string; controller: string; }
-
-const BASE_DIR: string = "apicvcl"
+const BASE_PREFIX: string = "apicvcl"
 const BASE_ALIAS: string = "api"
 
 
@@ -38,15 +37,22 @@ Route.group((): void =>
     Route
       .delete(`/${url}/:id`, `${controller}.destroy`)
       .as(`${url}.destroy`)
+    
+    if(url != "publications")
+        Route
+        .get(`/${url}/:id/publications/`, `${controller}.publications`)
+        .as(`${url}.publications`)
   }
-    /**
-     * @summary Rota de teste de conexão
-     */
+
   Route
-    .get("/", async ({ response }: HttpContextContract ): Promise<void> =>  response.json({ status: "ok"}))
-    .as("status")
+  .get("/", async ({ response }: HttpContextContract ): Promise<void> =>  response.json({ status: "ok"}))
+  .as("main")
+  
+  /**
+   * @summary Rota de teste de conexão
+   */
   Route
-    .get("health", async ({ response }: HttpContextContract): Promise<void> => 
+    .get("/status", async ({ response }: HttpContextContract): Promise<void> => 
     {
       const { report, healthy } = await HealthCheck.getReport()
 
@@ -56,5 +62,5 @@ Route.group((): void =>
     })
     .as("author.testDB")
 })
-  .prefix(BASE_DIR)
+  .prefix(BASE_PREFIX)
   .as(BASE_ALIAS)

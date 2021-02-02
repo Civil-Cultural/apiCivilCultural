@@ -1,6 +1,6 @@
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { Page } from 'Contracts/controllers'
+import { Page } from 'Contracts/validators'
 
 export default class PageValidator {
 	constructor(protected ctx: HttpContextContract) {
@@ -12,10 +12,10 @@ export default class PageValidator {
 
 
 	public schema = schema.create({
-		page: schema.number.optional(
+		page: schema.number(
 			[rules.unsigned()]
 		),
-		perPage: schema.number.optional(
+		perPage: schema.number(
 			[rules.unsigned()]
 		),
 	})

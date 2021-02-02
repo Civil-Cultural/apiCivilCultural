@@ -1,20 +1,35 @@
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { RuleNumberType, RuleStringType, ById } from 'Contracts/validators'
 
 export default class ByIdValidator {
   constructor (protected ctx: HttpContextContract) {
   }
 
-	public data: any = this.ctx.params
+	public data: ById = this.ctx.params
 	public reporter = validator.reporters.api
 
 	public schema  = schema.create({
-		id: schema.string({trim: true, escape: true},[rules.required()])
+		id: this.verifyTypeYbId() 
 	})
 
 	public messages = {
 		required: "Required field",
 		unsigned: "Value {{ field }} cannot be negative",
 		number: "{{ field }} not a number type"
+	}
+
+	public verifyTypeYbId(): RuleNumberType | RuleStringType 
+	{
+		console.table(this.data)
+
+		switch(this.data["type"]) {
+			case "number":
+				return schema.number([	rules.unsigned() ])
+			case "string":
+				return schema.string({ trim: true, escape: true },[rules.required()])
+			default:
+				return schema.number([	rules.unsigned() ])
+		}
 	}
 }

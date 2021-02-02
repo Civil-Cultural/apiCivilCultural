@@ -40,12 +40,13 @@ export default class AuthorsController  implements ResourceMethods {
     }
   }
 
-  public async show({ request, response, params: { id } }: HttpContextContract): Promise<void> 
+  public async show({ request, response, params }: HttpContextContract): Promise<void> 
   {
     try {
+      params.type = "string"
       await request.validate(ByIdValidator)
 
-      const author: Author = await Author.findOrFail(id)
+      const author: Author = await Author.findOrFail(params.id)
 
       response.ok(author)
 
@@ -54,14 +55,16 @@ export default class AuthorsController  implements ResourceMethods {
     }
   }
 
-  public async update({ request, response, params: { id } }: HttpContextContract): Promise<void> 
+  public async update({ request, response, params }: HttpContextContract): Promise<void> 
   {
     try {
+      params.type = "string"
+
       await request.validate(ByIdValidator)
       await request.validate(AuthorUpdateValidator)
 
       const props = request.all()
-      const authorUpdated:Author = await Author.findOrFail(id)
+      const authorUpdated:Author = await Author.findOrFail(params.id)
       
       for(let i in props)
         authorUpdated[i] = props[i]    
@@ -74,14 +77,35 @@ export default class AuthorsController  implements ResourceMethods {
     }
   }
 
-  public async destroy({ request, response, params: { id } }: HttpContextContract): Promise<void> 
+  public async destroy({ request, response, params }: HttpContextContract): Promise<void> 
   {
     try {
+      params.type = "string"
+
       await request.validate(ByIdValidator)
 
-      await (await Author.findOrFail(id)).delete()
+      await (await Author.findOrFail(params.id)).delete()
 
       response.ok({ deleted: true })
+
+    } catch (error) {
+      throw new LogicException(error.message, 404)
+    }
+  }
+
+  public async publications({ request, response, params }: HttpContextContract): Promise<void>  
+  {
+    try {
+      params.type = "string"
+      console.info(params.id || null)
+      await request.validate(ByIdValidator)
+      
+      const authorPublications = await (await Author.findOrFail(params.id))
+        .related("publications")
+        .query()
+        .select("*")
+
+      response.ok(authorPublications)
 
     } catch (error) {
       throw new LogicException(error.message, 404)

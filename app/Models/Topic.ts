@@ -17,10 +17,8 @@ export default class Topic extends BaseModel {
   @column()
   public description: string
 
-  @column.dateTime({ autoCreate: true })
-  public createdAt: DateTime
-
   @manyToMany(() => Publications, {
+    pivotTable: "publication_topic",
     pivotForeignKey: "topic_id",
     pivotRelatedForeignKey: "publication_id"
   })

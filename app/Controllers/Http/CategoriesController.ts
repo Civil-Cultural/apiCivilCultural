@@ -86,4 +86,9 @@ export default class CategoriesController implements ResourceMethods {
       throw new LogicException(error.message, 404)
     }
   }
+
+  public async publications(ctx: HttpContextContract): Promise<void>
+  {
+    
+  }
 }

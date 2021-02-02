@@ -91,4 +91,9 @@ export default class TopicsController  implements ResourceMethods {
       throw new LogicException(error.message,404)
     }
   }
+
+  public async publications(ctx: HttpContextContract): Promise<void>
+  {
+    
+  }
 }

@@ -12,5 +12,7 @@ declare module '@ioc:Adonis/Core/Resource' {
     update(ctx: HttpContextContract): Promise<any>
 
     destroy(ctx: HttpContextContract): Promise<any>
+
+    publications(ctx: HttpContextContract): Promise<any>
   }
 }

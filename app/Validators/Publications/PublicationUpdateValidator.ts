@@ -13,7 +13,7 @@ export default class PublicationUpdateValidator {
       trim: true
     }),
 
-    subTitle: schema.string.optional({
+    subtitle: schema.string.optional({
       trim: true
     }),
 
@@ -32,18 +32,18 @@ export default class PublicationUpdateValidator {
     }),
 
     typePublication: schema.enum.optional(
-      Object.values(TypePublicationsEnum) as Array<number>
+      Object.values(TypePublicationsEnum)
     ),
 
-    author: schema.string.optional({
+    authorId: schema.string.optional({
       trim: true
     }),
 
-    category: schema.array.optional().members(
+    categoryId: schema.array.optional().members(
       schema.number()
     ),
 
-    topic: schema.array.optional().members(
+    topicId: schema.array.optional().members(
       schema.number()
     )
   })

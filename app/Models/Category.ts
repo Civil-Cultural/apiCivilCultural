@@ -17,6 +17,7 @@ export default class Category extends BaseModel {
   public description: string
 
   @manyToMany(() => Publications, {
+    pivotTable: "publication_category",
     pivotForeignKey: "category_id",
     pivotRelatedForeignKey: "publication_id"
   })
