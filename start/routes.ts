@@ -40,7 +40,7 @@ Route.group((): void =>
     
     if(url != "publications")
         Route
-        .get(`/${url}/:id/publications/`, `${controller}.publications`)
+        .get(`/${url}/:id/publications/:page?/:perPage?`, `${controller}.publications`)
         .as(`${url}.publications`)
   }
 

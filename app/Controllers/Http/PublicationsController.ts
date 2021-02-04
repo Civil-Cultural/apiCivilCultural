@@ -10,20 +10,20 @@ import Topic from 'App/Models/Topic'
 import ByIdValidator from 'App/Validators/ByIdValidator'
 
 import PageValidator from 'App/Validators/PageValidator'
+import PublicationUpdateValidator from 'App/Validators/Publications/PublicationUpdateValidator'
 import PublicationValidator from 'App/Validators/Publications/PublicationValidator'
 
 export default class PublicationsController implements ResourceMethods {
-  
-  public async index({ request, response, params: { page, perPage} }: HttpContextContract): Promise<void> 
+
+  public async index({ request, response, params: { page, perPage } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(PageValidator)
-      
+
       const publications = await Publication
         .query()
-        .select("*")
         .paginate(page, perPage)
-        
+
       response.ok(publications)
     } catch (error) {
       throw new LogicException(error.message, 400)
@@ -35,66 +35,98 @@ export default class PublicationsController implements ResourceMethods {
     try {
       await request.validate(PublicationValidator)
 
-      const { authorId, categoryId, topicId } = request.only(["authorId","categoryId","topicId"])
+      const { authorId, categoryId, topicId } = request.only(["authorId", "categoryId", "topicId"])
 
-      const author = await Author.findOrFail(authorId)
-      const category = await Category.findOrFail(categoryId)
-      const topic = await Topic.findOrFail(topicId)
       const publication = new Publication
 
-      const data = request.except(["authorId","categoryId","topicId"])
-      for(let key in data) 
+      const data = request.except(["authorId", "categoryId", "topicId"])
+      for (let key in data)
         publication[key] = data[key]
 
-      
-      await author.related("publications").save(publication);
-      await category.related("publications").save(publication);
-      await topic.related("publications").save(publication)
+      await (await Author.findOrFail(authorId))
+        .related("publications")
+        .save(publication);
+
+      await (await Category.findOrFail(categoryId))
+        .related("publications")
+        .save(publication);
+
+      await (await Topic.findOrFail(topicId))
+        .related("publications")
+        .save(publication)
 
       response.ok(publication)
-      
+
     } catch (error) {
       throw new LogicException(error.message, 400)
     }
   }
 
-  public async show({ request, response, params }: HttpContextContract): Promise<void>
+  public async show({ request, response, params }: HttpContextContract): Promise<void> 
   {
     try {
       params.type = "string"
       await request.validate(ByIdValidator)
 
-      const publication: Publication = await Publication.firstOrFail(params.id)
+      const publications = await Publication.findOrFail(params.id)
+
+      response.ok(publications)
+
+    } catch (error) {
+      throw new LogicException(error.message, 404)
+    }
+  }
+
+  public async update({ request, response, params }: HttpContextContract): Promise<void> 
+  {
+    try {
+      params.type = "string"
+      request.validate(ByIdValidator)
+      request.validate(PublicationUpdateValidator)
+
+      const publication = await Publication.findOrFail(params.id)
+
+      const data = request.except(["authorId", "categoryId", "topicId"])
+      for (let key in data)
+        publication[key] = data[key]
+
+
+
+      console.log(publication)
+      await (await Author.findOrFail(publication.authorId))
+        .related("publications")
+        .save(publication);
+
+      await (new Category)
+        .related("publications")
+        .save(publication)
+
+      await (new Topic)
+        .related("publications")
+        .save(publication)
 
       response.ok(publication)
-      
+
     } catch (error) {
       throw new LogicException(error.message, 404)
     }
   }
 
-  public async update({ request, response, params }: HttpContextContract): Promise<void>
+  public async destroy({ request, response, params }: HttpContextContract): Promise<void> 
   {
     try {
       params.type = "string"
       await request.validate(ByIdValidator)
+
+      await (await Publication.findOrFail(params.id)).delete()
+
+      response.ok({deleted: true})
     } catch (error) {
       throw new LogicException(error.message, 404)
     }
   }
 
-  public async destroy({ request, response, params }: HttpContextContract): Promise<void>
-  {
-    try {
-      params.type = "string"
-      await request.validate(ByIdValidator)
-      
-    } catch (error) {
-      throw new LogicException(error.message, 404)
-    }
-  }
-
-  public async publications(ctx: HttpContextContract): Promise<void>  
+  public async publications(ctx: HttpContextContract): Promise<void> 
   {
     ctx.logger.debug("método abstrato")
   }

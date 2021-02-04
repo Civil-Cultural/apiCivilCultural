@@ -96,14 +96,17 @@ export default class AuthorsController  implements ResourceMethods {
   public async publications({ request, response, params }: HttpContextContract): Promise<void>  
   {
     try {
+      const {id, page, perPage } = params
       params.type = "string"
-      console.info(params.id || null)
-      await request.validate(ByIdValidator)
       
-      const authorPublications = await (await Author.findOrFail(params.id))
-        .related("publications")
-        .query()
-        .select("*")
+      await request.validate(ByIdValidator)
+      await request.validate(PageValidator)
+      
+      const authorPublications = await Author
+      .query()
+      .preload("publications")
+      .where("id", id)
+      .paginate(page, perPage)
 
       response.ok(authorPublications)
 

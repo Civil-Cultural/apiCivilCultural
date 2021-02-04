@@ -27,4 +27,8 @@ export default class LogicException extends Exception {
 
     super(errorMsg, status, code)
   }
+
+  public async handle() {
+    
+  }
 }
