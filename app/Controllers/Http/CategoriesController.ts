@@ -16,12 +16,12 @@ export default class CategoriesController implements ResourceMethods {
     try {
       await request.validate(PageValidator)
 
-      const categories = await Category
-        .query()
-        .select("*")
-        .paginate(page, perPage)
-
-      response.ok(categories)
+      response.ok(
+        await Category
+          .query()
+          .select("*")
+          .paginate(page, perPage)
+      )
     } catch (error) {
       throw new LogicException(error.message, 400)
     }
@@ -31,10 +31,8 @@ export default class CategoriesController implements ResourceMethods {
   {
     try {
       await request.validate(CategoryValidator)
-      const category: Category = await Category.create(Object(request.all()))
 
-      response.ok(category)
-
+      response.ok(await Category.create(Object(request.all())))
     } catch (error) {
       throw new LogicException(error.message, 400)
     }
@@ -44,10 +42,8 @@ export default class CategoriesController implements ResourceMethods {
   {
     try {
       await request.validate(ByIdValidator)
-      let categoryShow: Category = await Category.findOrFail(id)
 
-      response.status(200).json(categoryShow)
-
+      response.ok(await Category.findOrFail(id))
     } catch (error) {
       throw new LogicException(error.message, 404)
     }
@@ -60,14 +56,12 @@ export default class CategoriesController implements ResourceMethods {
       await request.validate(CategoryUpdateValidator)
 
       const props = request.all()
-      const categoryUpdate: Category = await Category.findOrFail(id)
+      const categoryUpdate = await Category.findOrFail(id)
         
       for(let i in props)
           categoryUpdate[i] = props[i]
 
-      categoryUpdate.save()
-      response.ok(categoryUpdate)
-
+      response.ok(await categoryUpdate.save())
     } catch (error) {
       throw new LogicException(error.message, 404)
     }
@@ -87,8 +81,25 @@ export default class CategoriesController implements ResourceMethods {
     }
   }
 
-  public async publications(ctx: HttpContextContract): Promise<void>
+  public async publications({request, response, params }: HttpContextContract): Promise<void>
   {
-    
+    try {
+      const { id, page, perPage } = params
+      params.type = "string"
+      
+      await request.validate(ByIdValidator)
+      await request.validate(PageValidator)
+
+
+      response.ok(
+        await Category
+          .query()
+          .preload("publications")
+          .where("id", id)
+          .paginate(page, perPage)
+      )
+    } catch (error) {
+      throw new LogicException(error.message, 404)
+    }
   }
 }

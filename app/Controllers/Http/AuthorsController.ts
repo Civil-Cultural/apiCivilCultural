@@ -7,21 +7,22 @@ import Author from 'App/Models/Author'
 import PageValidator from 'App/Validators/PageValidator'
 import ByIdValidator from 'App/Validators/ByIdValidator'
 import AuthorValidator from 'App/Validators/Authors/AuthorValidator'
-import AuthorUpdateValidator from 'App/Validators/Authors/AuthorUpdateValidator' 
+import AuthorUpdateValidator from 'App/Validators/Authors/AuthorUpdateValidator'
 
 
-export default class AuthorsController  implements ResourceMethods {
+export default class AuthorsController implements ResourceMethods {
 
   public async index({ request, response, params: { page, perPage } }: HttpContextContract): Promise<void> 
   {
     try {
       await request.validate(PageValidator)
-      const authors = await Author
-        .query()
-        .select("*")
-        .paginate(page, perPage)
-
-      response.ok(authors)
+      
+      response.ok(
+        await Author
+          .query()
+          .select("*")
+          .paginate(page, perPage)
+      )
     } catch (error) {
       throw new LogicException(error.message, 400)
     }
@@ -32,9 +33,7 @@ export default class AuthorsController  implements ResourceMethods {
     try {
       await request.validate(AuthorValidator)
 
-      const author: Author = await Author.create(Object(request.all()))
-      
-      response.ok(author)
+      response.ok(await Author.create(Object(request.all())))
     } catch (error) {
       throw new LogicException(error.message, 400)
     }
@@ -45,11 +44,8 @@ export default class AuthorsController  implements ResourceMethods {
     try {
       params.type = "string"
       await request.validate(ByIdValidator)
-
-      const author: Author = await Author.findOrFail(params.id)
-
-      response.ok(author)
-
+      
+      response.ok(await Author.findOrFail(params.id))
     } catch (error) {
       throw new LogicException(error.message, 404)
     }
@@ -64,14 +60,12 @@ export default class AuthorsController  implements ResourceMethods {
       await request.validate(AuthorUpdateValidator)
 
       const props = request.all()
-      const authorUpdated:Author = await Author.findOrFail(params.id)
-      
-      for(let i in props)
-        authorUpdated[i] = props[i]    
+      const authorUpdated = await Author.findOrFail(params.id)
 
-      authorUpdated.save()
-      response.ok(authorUpdated)
+      for (let i in props)
+        authorUpdated[i] = props[i]
 
+      response.ok(await authorUpdated.save())
     } catch (error) {
       throw new LogicException(error.message, 404)
     }
@@ -81,7 +75,6 @@ export default class AuthorsController  implements ResourceMethods {
   {
     try {
       params.type = "string"
-
       await request.validate(ByIdValidator)
 
       await (await Author.findOrFail(params.id)).delete()
@@ -93,22 +86,22 @@ export default class AuthorsController  implements ResourceMethods {
     }
   }
 
-  public async publications({ request, response, params }: HttpContextContract): Promise<void>  
+  public async publications({ request, response, params }: HttpContextContract): Promise<void> 
   {
     try {
-      const {id, page, perPage } = params
+      const { id, page, perPage } = params
       params.type = "string"
-      
+
       await request.validate(ByIdValidator)
       await request.validate(PageValidator)
-      
-      const authorPublications = await Author
-      .query()
-      .preload("publications")
-      .where("id", id)
-      .paginate(page, perPage)
 
-      response.ok(authorPublications)
+      response.ok(
+        await Author
+          .query()
+          .preload("publications")
+          .where("id", id)
+          .paginate(page, perPage)
+      )
 
     } catch (error) {
       throw new LogicException(error.message, 404)

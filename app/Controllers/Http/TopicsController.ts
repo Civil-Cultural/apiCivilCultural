@@ -15,16 +15,14 @@ export default class TopicsController  implements ResourceMethods {
   public async index({ request, response, params: { page, perPage } }: HttpContextContract): Promise<void> 
   {
     try {
-
       await request.validate(PageValidator)
 
-      const topics = await Topic
-        .query()
-        .select("*")
-        .paginate(page, perPage)
-
-        response.ok(topics)
-      
+      response.ok(
+        await Topic
+          .query()
+          .select("*")
+          .paginate(page, perPage)
+      )
     } catch (error) {
       throw new LogicException(error.message, 400)
     }
@@ -34,10 +32,8 @@ export default class TopicsController  implements ResourceMethods {
   {
     try {
       await request.validate(TopicValidator)
-      const topic: Topic = await Topic.create(Object(request.all()))
 
-      response.ok(topic)
-
+      response.ok(await Topic.create(Object(request.all())))
     } catch (error) {
       throw new LogicException(error.message,400)
     }
@@ -48,10 +44,7 @@ export default class TopicsController  implements ResourceMethods {
     try {
       await request.validate(ByIdValidator)
 
-      const topic:Topic = await Topic.findOrFail(id)
-
-      response.ok(topic)
-      
+      response.ok(await Topic.findOrFail(id))
     } catch (error) {
       throw new LogicException(error.message,404)
     }
@@ -64,14 +57,12 @@ export default class TopicsController  implements ResourceMethods {
       await request.validate(TopicUpdateValidator)
 
       const props = request.all()
-      const topicUpdated:Topic = await Topic.findOrFail(id)
+      const topicUpdated = await Topic.findOrFail(id)
 
       for(let i in props)
         topicUpdated[i] = props[i]  
         
-      topicUpdated.save()
-      response.ok(topicUpdated)
-
+      response.ok(await topicUpdated.save())
     } catch (error) {
       throw new LogicException(error.message,404)
     }
@@ -92,8 +83,24 @@ export default class TopicsController  implements ResourceMethods {
     }
   }
 
-  public async publications(ctx: HttpContextContract): Promise<void>
+  public async publications({ request, response, params}: HttpContextContract): Promise<void>
   {
-    
+    try {
+      const {id, page, perPage } = params
+      params.type = "string"
+      
+      await request.validate(ByIdValidator)
+      await request.validate(PageValidator)
+
+      response.ok(
+        await Topic
+          .query()
+          .preload("publications")
+          .where("id", id)
+          .paginate(page,perPage)
+      )    
+    } catch (error) {
+      throw new LogicException(error.message, 404)
+    }
   }
 }

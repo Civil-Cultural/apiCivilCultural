@@ -1,3 +1,4 @@
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { Exception } from '@poppinss/utils'
 import Application from '@ioc:Adonis/Core/Application'
 
@@ -19,6 +20,7 @@ export default class LogicException extends Exception {
     if (typeof errorMsg == "object") {
       if (["errno", "code", "syscall", "address","port"].every( v => v in <errorStatusDB>errorMsg))
           errorMsg = errorMsg.code
+
       errorMsg = (new String(errorMsg)).toString()
     }
 
@@ -28,7 +30,4 @@ export default class LogicException extends Exception {
     super(errorMsg, status, code)
   }
 
-  public async handle() {
-    
-  }
 }

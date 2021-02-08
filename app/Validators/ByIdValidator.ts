@@ -21,8 +21,6 @@ export default class ByIdValidator {
 
 	public verifyTypeYbId(): RuleNumberType | RuleStringType 
 	{
-		console.table(this.data)
-
 		switch(this.data["type"]) {
 			case "number":
 				return schema.number([	rules.unsigned() ])

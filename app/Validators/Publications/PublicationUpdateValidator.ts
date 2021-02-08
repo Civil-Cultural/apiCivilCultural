@@ -39,13 +39,13 @@ export default class PublicationUpdateValidator {
       trim: true
     }),
 
-    categoryId: schema.array.optional().members(
-      schema.number()
-    ),
+    categoryId: schema.number.optional([
+      rules.unsigned()
+    ]),
 
-    topicId: schema.array.optional().members(
-      schema.number()
-    )
+    topicId: schema.number.optional([
+      rules.unsigned()
+    ])
   })
 
 	

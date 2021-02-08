@@ -20,11 +20,11 @@ export default class PublicationsController implements ResourceMethods {
     try {
       await request.validate(PageValidator)
 
-      const publications = await Publication
-        .query()
-        .paginate(page, perPage)
-
-      response.ok(publications)
+      response.ok(
+        await Publication
+          .query()
+          .paginate(page, perPage)
+      )
     } catch (error) {
       throw new LogicException(error.message, 400)
     }
@@ -40,6 +40,7 @@ export default class PublicationsController implements ResourceMethods {
       const publication = new Publication
 
       const data = request.except(["authorId", "categoryId", "topicId"])
+
       for (let key in data)
         publication[key] = data[key]
 
@@ -68,9 +69,7 @@ export default class PublicationsController implements ResourceMethods {
       params.type = "string"
       await request.validate(ByIdValidator)
 
-      const publications = await Publication.findOrFail(params.id)
-
-      response.ok(publications)
+      response.ok(await Publication.findOrFail(params.id))
 
     } catch (error) {
       throw new LogicException(error.message, 404)
@@ -81,29 +80,32 @@ export default class PublicationsController implements ResourceMethods {
   {
     try {
       params.type = "string"
-      request.validate(ByIdValidator)
-      request.validate(PublicationUpdateValidator)
+      await request.validate(ByIdValidator)
+      await request.validate(PublicationUpdateValidator)
 
       const publication = await Publication.findOrFail(params.id)
-
       const data = request.except(["authorId", "categoryId", "topicId"])
-      for (let key in data)
+      const categoryId = request.input("categoryId") ?? null
+      const topicId = request.input("topicId") ?? null
+
+      for (let key in data) 
         publication[key] = data[key]
 
+      if (publication?.authorId)
+        await (await Author.findOrFail(publication.authorId))
+          .related("publications")
+          .save(publication);
 
+      if (categoryId)
+        await (await Category.findOrFail(categoryId))
+          .related("publications")
+          .save(publication)
 
-      console.log(publication)
-      await (await Author.findOrFail(publication.authorId))
-        .related("publications")
-        .save(publication);
+      if (topicId)
+        await (await Topic.findOrFail(topicId))
+          .related("publications")
+          .save(publication)
 
-      await (new Category)
-        .related("publications")
-        .save(publication)
-
-      await (new Topic)
-        .related("publications")
-        .save(publication)
 
       response.ok(publication)
 
@@ -120,14 +122,11 @@ export default class PublicationsController implements ResourceMethods {
 
       await (await Publication.findOrFail(params.id)).delete()
 
-      response.ok({deleted: true})
+      response.ok({ deleted: true })
     } catch (error) {
       throw new LogicException(error.message, 404)
     }
   }
 
-  public async publications(ctx: HttpContextContract): Promise<void> 
-  {
-    ctx.logger.debug("método abstrato")
-  }
+  public async publications(_: HttpContextContract): Promise<void> {}
 }
