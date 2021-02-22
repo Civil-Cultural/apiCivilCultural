@@ -21,6 +21,7 @@ export default class PageValidator {
 	})
 
 	public messages = {
+		required: "Required field {{ field }}",
 		unsigned: "Value {{ field }} cannot be negative",
 		number: " {{ field }} not a number type",
 		rules: "Numbers from 1 to 4 are accepted"

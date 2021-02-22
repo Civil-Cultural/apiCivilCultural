@@ -30,4 +30,9 @@ export default class LogicException extends Exception {
     super(errorMsg, status, code)
   }
 
+  public handler({ message, code }: this, { response }: HttpContextContract)
+  {
+    response.status(Number(code)).json({ error: message});
+  }
+
 }

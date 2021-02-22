@@ -27,7 +27,8 @@
     "./providers/AppProvider",
     "@adonisjs/core",
     "@adonisjs/session",
-    "@adonisjs/lucid"
+    "@adonisjs/lucid",
+    "@adonisjs/auth"
   ],
   "aceProviders": [
     "@adonisjs/repl"

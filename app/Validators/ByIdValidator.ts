@@ -14,7 +14,7 @@ export default class ByIdValidator {
 	})
 
 	public messages = {
-		required: "Required field",
+		required: "Required field {{ field }}",
 		unsigned: "Value {{ field }} cannot be negative",
 		number: "{{ field }} not a number type"
 	}

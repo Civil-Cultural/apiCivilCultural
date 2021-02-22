@@ -70,6 +70,7 @@ export default class CategoriesController implements ResourceMethods {
   public async destroy({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   { 
     try {
+      console.log(id)
       await request.validate(ByIdValidator)
 
      await (await Category.findOrFail(id)).delete()

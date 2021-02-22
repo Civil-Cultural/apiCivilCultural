@@ -33,9 +33,8 @@ export default class Author extends BaseModel {
   public publications: HasMany<typeof Publications>
 
   @beforeSave()
-  public static async hashPassword(author: Author) 
-  {
-    if(author.$dirty.password)
+  public static async hashPassword(author: Author): Promise<void> {
+    if (author.$dirty.password)
       author.password = await Hash.hash(author.password)
   }
 }

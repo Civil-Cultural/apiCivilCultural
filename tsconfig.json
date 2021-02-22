@@ -29,7 +29,8 @@
       "@adonisjs/core",
       "@adonisjs/repl",
       "@adonisjs/session",
-      "@adonisjs/lucid"
+      "@adonisjs/lucid",
+      "@adonisjs/auth"
     ]
   }
 }
