@@ -96,7 +96,7 @@ Route
 
     healthy ?
       response.ok({ connection: 'ok', message: report.lucid.health.message }) :
-      response.badRequest({ connection: 'error', message: report.lucid.health.message })
+      response.serviceUnavailable({ connection: 'error', message: report.lucid.health.message })
   })
   .prefix(BASE_PREFIX)
   .as(`${BASE_ALIAS}.auth.status`)
