@@ -10,7 +10,7 @@
 
 <p>Nenhuma dá um sistema de conversas em grandes grupos, com boa qualidade garantida no seu conteúdo.</p>
 
-<p> O meu objetivo, ao oferecer um enorme projeto de propriedade pública, é acabar, em grande parte, com os vazios existentes.</p>
+<p> O objetivo, ao oferecer um enorme projeto de propriedade pública, é acabar, em grande parte, com os vazios existentes.</p>
 
 <p>Cumprirá as leis próprias oficiais do estado que o portal represente, entre centenas de outros portais com o mesmo princípio. Tem a gestão controlada somente por profissionais de cada área, e com o conteúdo bem gerido em boa qualidade pelo menos, na parte das conversas do chat, poderá incluir peritos também.</p>
 
@@ -18,12 +18,12 @@
 
 <p> Vai oferecer a grande parte do conhecimento sério popular atual (links de artigos e noticias) e um sistema único em infinitas conversas construtivas. Com memorial das melhores conversas. </p>
 
-<p> Este poderá ser o último grande projeto no qual os humanos têm, pelo menos, a maior parte do controlo sobre a informação dada. Já que a inteligência artificial é cada vez mais dominante com o tempo.</p>
+<p> Este poderá ser o último grande projeto no qual os humanos têm, pelo menos, a maior parte do controle sobre a informação dada. Já que a inteligência artificial é cada vez mais dominante com o tempo.</p>
 
-Quase todas gostam da ideia do meu projeto.
+<p>Quase todos gostaram da ideia do projeto. E se você gosta da ideia e queira contribuir entre contato por e-mail civilcultural@memail.com ou entre no grupo do <a href='#'>Discord</a></p> 
 
 <h3>Situação atual do projeto</h3>
 
-<p>O projeto está em modo limbo pela primeira vez. E poderá recorrer pela primeira vez a donativos para contratar programadores profissionais e nada mais em diferença.</p>
+<p>O projeto está em modo limbo pela primeira vez. E poderá recorrer pela primeira vez a donativos para contratar programadores profissionais.</p>
 
 <a href='https://github.com/Civil-Cultural/siteCivilCultural/blob/master/LICENCE.MD'>© 2021 Civil Cultural</a>
