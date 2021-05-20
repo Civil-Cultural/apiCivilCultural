@@ -26,4 +26,4 @@
 
 <p>O projeto está em modo limbo pela primeira vez. E poderá recorrer pela primeira vez a donativos para contratar programadores profissionais.</p>
 
-<a href='https://github.com/Civil-Cultural/siteCivilCultural/blob/master/LICENCE.MD'>© 2021 Civil Cultural</a>
+<a href='https://github.com/Civil-Cultural/apiCivilCultural/blob/master/LICENCE.MD'>© 2021 Civil Cultural</a>
