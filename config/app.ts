@@ -10,7 +10,7 @@ export const appKey: string = Env.get('APP_KEY')
 export const http: ServerConfig = {
   allowMethodSpoofing: false,
   subdomainOffset: 2,
-  generateRequestId: false,
+  generateRequestId: true,
   trustProxy: proxyAddr.compile('loopback'),
 
   etag: false,
@@ -24,6 +24,12 @@ export const http: ServerConfig = {
     secure: false,
     sameSite: false,
   },
+
+  getIp(request) {
+    const nginxRealIp = request.header('X-Real-Ip')
+
+    return nginxRealIp ? nginxRealIp : request.ips()[0]
+  }
 }
 
 export const logger: LoggerConfig = {

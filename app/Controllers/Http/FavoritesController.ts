@@ -1,13 +1,15 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import LogicException from "App/Exceptions/LogicException";
-import PageValidator from "App/Validators/PageValidator";
-import ByIdValidator from "App/Validators/ByIdValidator";
-import User from 'App/Models/User';
-import FavoritePublicationValidator from 'App/Validators/Favorites/FavoritePublicationValidator';
-import FavoriteCategoryValidator from 'App/Validators/Favorites/FavoriteCategoryValidator';
-import FavoriteParamValidator from 'App/Validators/Favorites/FavoriteParamValidator';
-import Publication from 'App/Models/Publication';
-import Category from 'App/Models/Category';
+import LogicException from "App/Exceptions/LogicException"
+
+import User from 'App/Models/User'
+import Publication from 'App/Models/Publication'
+import Category from 'App/Models/Category'
+
+import PageValidator from "App/Validators/PageValidator"
+import ByIdValidator from "App/Validators/ByIdValidator"
+import FavoritePublicationValidator from 'App/Validators/Favorites/FavoritePublicationValidator'
+import FavoriteCategoryValidator from 'App/Validators/Favorites/FavoriteCategoryValidator'
+import FavoriteParamValidator from 'App/Validators/Favorites/FavoriteParamValidator'
 
 export default class FavoritesController {
 
@@ -72,15 +74,16 @@ export default class FavoritesController {
 
       await user.related('favoriteCategories').detach([ params.categoryId ]);
 
-      await User
+      const favoriteCategories = await User
       .query()
       .preload(
         'favoriteCategories',
-        q => q.wherePivot('category_id', params.categoryId)
-      )
-      .first()
+        q => q.wherePivot('category_id', '32')
+      ).first()
 
-      response.ok({ deleted: true })
+      console.log(favoriteCategories)
+      
+      response.ok( favoriteCategories?.$preloaded != {} ? { deleted: true } : { deleted: false })
 
     } catch (error) {
       throw new LogicException(error.message, 404)

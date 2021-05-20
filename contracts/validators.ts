@@ -11,7 +11,7 @@ export type RuleStringType =  {
 }
 
 export type Page = {
-  page: number,
+  page: number;
   perPage: number
 }
 
@@ -21,11 +21,13 @@ export type ById = {
 }
 
 export type FavoriteCategoriesParam = {
-  id: string,
-  categoryId: number
+  id: string;
+  categoryId: number;
+  type?: string
 }
 
 export type FavoritePublicationsParam = {
-  id: string,
-  publicationId: string 
+  id: string;
+  publicationId: string;
+  type?: string
 }

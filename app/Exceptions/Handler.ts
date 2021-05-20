@@ -25,16 +25,16 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     super(Logger)
   }
 
-  public async handle(err: Exception, ctx: HttpContextContract): Promise<void>
+  public async handle({ status, message }: Exception,  { response }: HttpContextContract): Promise<void>
   {
-    console.log(err)
-    const { response } = ctx, { status, message } = err
-    
-    if(Application.inDev) console.error(err)
-
     if(status) 
         response
           .status(status)
           .json({status, error: this.statusJson[status] ?? message })
+  }
+
+  public async report({message, name, code, status }: Exception , ctx: HttpContextContract): Promise<void>
+  {
+    if(Application.inDev) Logger.warn(`\n${name}: ${message}\nstatus: ${status}\n`)
   }
 }

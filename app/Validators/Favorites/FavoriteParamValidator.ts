@@ -27,8 +27,6 @@ export default class FavoriteParamValidator {
 				throw new LogicException('\'type\' is undefined', 500)
 		}
 
-		console.log(typedSchema)
-
 		return typedSchema
 	}
 

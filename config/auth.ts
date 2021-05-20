@@ -29,13 +29,9 @@ const authConfig: AuthConfig = {
       },
 
       provider: {
-
         driver: 'database',
-
         identifierKey: 'id',
-
         uids: ['email'],
-
         usersTable: 'users_auth',
       },
     },
