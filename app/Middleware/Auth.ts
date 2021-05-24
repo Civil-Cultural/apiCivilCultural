@@ -3,7 +3,7 @@ import { AuthenticationException } from '@adonisjs/auth/build/standalone'
 
 export default class AuthMiddleware {
 
-  protected redirectTo = '/login'
+  protected redirectTo = ''
 
   protected async authenticate ({ auth }: HttpContextContract, guards: any[]) {
 

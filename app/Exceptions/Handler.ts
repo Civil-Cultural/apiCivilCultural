@@ -33,7 +33,7 @@ export default class ExceptionHandler extends HttpExceptionHandler {
           .json({status, error: this.statusJson[status] ?? message })
   }
 
-  public async report({message, name, code, status }: Exception , ctx: HttpContextContract): Promise<void>
+  public async report({message, name, status }: Exception , _: HttpContextContract): Promise<void>
   {
     if(Application.inDev) Logger.warn(`\n${name}: ${message}\nstatus: ${status}\n`)
   }

@@ -1,3 +1,3 @@
 declare module '@ioc:Adonis/Core/Route' {
-  export type PropsUrl = { url: string; controller: string; }
+  export type PropsUrl = { url: string; controller: string; params?: string | string[] | undefined }
 }

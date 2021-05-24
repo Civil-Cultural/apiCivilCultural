@@ -15,60 +15,66 @@ const URLS: PropsUrl[] = [
   { url: 'users', controller: 'UsersController' }
 ]
 
+const URLSFavorites: PropsUrl[] = [
+  { url: 'categories', controller: 'FavoritesController', params: 'categoryId' },
+  { url: 'publications', controller: 'FavoritesController', params: 'publicationId' }
+]
+
 Route.group((): void => {
   /**
    * @summary Rotas prédefinidas 
   */
-  for (let prop of URLS) {
-    const { url, controller } = prop
+  for (let { url, controller } of URLS) {
+
     Route
       .get(`/${url}/:page/:perPage`, `${controller}.index`)
       .as(`${url}.index`)
+
     Route
       .post(`/${url}`, `${controller}.store`)
       .as(`${url}.store`)
+
     Route
       .get(`/${url}/:id`, `${controller}.show`)
       .as(`${url}.show`)
+
     Route
       .put(`/${url}/:id`, `${controller}.update`)
       .as(`${url}.update`)
+
     Route
       .delete(`/${url}/:id`, `${controller}.destroy`)
       .as(`${url}.destroy`)
 
     if (!['publications', 'users'].includes(url))
-      Route
-        .get(`/${url}/:id/publications/:page?/:perPage?`, `${controller}.publications`)
-        .as(`${url}.publications`)
+        Route
+          .get(`/${url}/:id/publications/:page?/:perPage?`, `${controller}.publications`)
+          .as(`${url}.publications`)
   }
   // --- --- --- --- ---
 
-  Route
-    .get('/users/:id/categories/:page?/:perPage?', 'FavoritesController.indexCategories')
-    .as('users.indexCategories')
 
-  Route
-    .post('/users/categories', 'FavoritesController.storeCategories')
-    .as('users.storeCategories')
+  for (let { url, controller, params } of URLSFavorites) {
+    let urlMatch = url.replace(/\b\w{1}/, (m) => m.toUpperCase())
+    params = Array.isArray(params) ? params.join('\/:') : params
 
-  Route
-    .delete('/users/:id/categories/:categoryId', 'FavoritesController.removeCategories')
-    .as('users.removeCategories')
+    Route
+      .get(`/users/:id/${url}/:page?/:perPage?`, `${controller}.index${urlMatch}`)
+      .as(`users.index${urlMatch}`)
 
+    Route
+      .post(`/users/${url}`, `${controller}.store${urlMatch}`)
+      .as(`users.store${urlMatch}`)
 
-  Route
-    .get('/users/:id/publications/:page?/:perPage?', 'FavoritesController.indexPublications')
-    .as('users.indexPublications')
+    Route
+      .get(`/users/${url}/:id/:${params}`, `${controller}.show${urlMatch}`)
+      .as(`user.show${urlMatch}`)
 
-  Route
-    .post('/users/publications', 'FavoritesController.storePublications')
-    .as('users.storePublications')
+    Route
+      .delete(`/users/:id/${url}/:${params}`, `${controller}.remove${urlMatch}`)
+      .as(`users.remove${urlMatch}`)
 
-  Route
-    .delete('/users/:id/publications/:publicationId', 'FavoritesController.removePublications')
-    .as('users.removePublications')
-
+  }
 
   /**
    * Rotas da autenticação do token

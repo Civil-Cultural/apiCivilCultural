@@ -1,6 +1,4 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { Exception } from '@poppinss/utils'
-import Application from '@ioc:Adonis/Core/Application'
 import { errorStatusDB } from '@ioc:Adonis/Core/Exception'
 
 export default class LogicException extends Exception {
@@ -19,12 +17,4 @@ export default class LogicException extends Exception {
 
     super(errorMsg, status, code)
   }
-
-  public async handle({ message, status, code }: this, { response }: HttpContextContract): Promise<void>
-  {
-    if(Application.inDev) console.warn({ status, code, error: message })
-    
-    response.status(status).json({ error: message});
-  }
-
 }

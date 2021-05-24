@@ -7,32 +7,25 @@
 
 import { AuthConfig } from '@ioc:Adonis/Addons/Auth'
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Mapping
-|--------------------------------------------------------------------------
-|
-| List of available authentication mapping. You must first define them
-| inside the `contracts/auth.ts` file before mentioning them here.
-|
-*/
 const authConfig: AuthConfig = {
   guard: 'api',
   list: {
+
     api: {
       driver: 'oat',
-
       tokenProvider: {
-        driver: 'database',
-        table: 'api_tokens',
+        driver: 'redis',
+        redisConnection: 'local',
         foreignKey: 'user_id',
       },
 
       provider: {
-        driver: 'database',
+        driver: 'lucid',
         identifierKey: 'id',
-        uids: ['email'],
-        usersTable: 'users_auth',
+        uids: ['email','password'],
+        model: () => import('App/Models/UserAuth'),
+        connection: 'pg',
+        hashDriver: 'argon'
       },
     },
   },
