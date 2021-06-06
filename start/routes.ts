@@ -47,19 +47,17 @@ Route.group((): void => {
       .as(`${url}.destroy`)
 
     if (!['publications', 'users'].includes(url))
-        Route
-          .get(`/${url}/:id/publications/:page?/:perPage?`, `${controller}.publications`)
-          .as(`${url}.publications`)
+      Route
+        .get(`/${url}/:id/publications/:page/:perPage`, `${controller}.publications`)
+        .as(`${url}.publications`)
   }
-  // --- --- --- --- ---
-
 
   for (let { url, controller, params } of URLSFavorites) {
     let urlMatch = url.replace(/\b\w{1}/, (m) => m.toUpperCase())
     params = Array.isArray(params) ? params.join('\/:') : params
 
     Route
-      .get(`/users/:id/${url}/:page?/:perPage?`, `${controller}.index${urlMatch}`)
+      .get(`/users/:id/${url}/:page/:perPage`, `${controller}.index${urlMatch}`)
       .as(`users.index${urlMatch}`)
 
     Route
@@ -67,18 +65,25 @@ Route.group((): void => {
       .as(`users.store${urlMatch}`)
 
     Route
-      .get(`/users/${url}/:id/:${params}`, `${controller}.show${urlMatch}`)
-      .as(`user.show${urlMatch}`)
+      .get(`/users/${url}/:userId/:${params}`, `${controller}.show${urlMatch}`)
+      .as(`users.show${urlMatch}`)
 
     Route
-      .delete(`/users/:id/${url}/:${params}`, `${controller}.remove${urlMatch}`)
+      .delete(`/users/${url}/:userId/:${params}`, `${controller}.remove${urlMatch}`)
       .as(`users.remove${urlMatch}`)
 
   }
 
+  /* --- --- --- --- --- */
+
   /**
-   * Rotas da autenticação do token
+   * @summary Rotas da autenticações
    */
+
+  Route
+    .post('/users/login','UsersController.login')
+    .as('users.login')
+
   Route
     .post('/auth', 'AuthController.store')
     .as('auth.store')
@@ -93,6 +98,11 @@ Route.group((): void => {
   .middleware('auth')
 
 
+Route
+  .post('/auth/login', 'AuthController.login')
+  .prefix(BASE_PREFIX)
+  .as(`${BASE_ALIAS}.auth.login`)
+
 /**
  * @summary Rota de teste de conexão
  */
@@ -106,8 +116,3 @@ Route
   })
   .prefix(BASE_PREFIX)
   .as(`${BASE_ALIAS}.auth.status`)
-
-Route
-  .post('/auth/login', 'AuthController.login')
-  .prefix(BASE_PREFIX)
-  .as(`${BASE_ALIAS}.auth.login`)

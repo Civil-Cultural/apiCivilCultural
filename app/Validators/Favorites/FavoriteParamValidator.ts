@@ -1,6 +1,5 @@
 import { schema , rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import LogicException from 'App/Exceptions/LogicException'
 import { FavoriteCategoriesParam, FavoritePublicationsParam } from 'Contracts/validators'
 
 export default class FavoriteParamValidator {
@@ -14,7 +13,7 @@ export default class FavoriteParamValidator {
   public schema = schema.create(this.typeFavoriteParam())
 
   protected typeFavoriteParam() {
-		const typedSchema = { id: schema.string({ trim: true }) }
+		const typedSchema = { userId: schema.string({ trim: true }) }
 		
 		switch(this.data['type']) {
 			case 'favoriteCategories':
@@ -24,7 +23,7 @@ export default class FavoriteParamValidator {
 				typedSchema['publicationId'] = schema.string({ trim: true })
 				break;
 			default:
-				throw new LogicException('\'type\' is undefined', 500)
+				throw '\'type\' is undefined'
 		}
 
 		return typedSchema

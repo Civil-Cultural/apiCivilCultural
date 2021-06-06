@@ -1,8 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
 
-import LogicException from 'App/Exceptions/LogicException'
-
 import Author from 'App/Models/Author'
 
 import PageValidator from 'App/Validators/PageValidator'
@@ -15,7 +13,6 @@ export default class AuthorsController implements ResourceMethods {
 
   public async index({ request, response, params: { page = 1, perPage = 10 } }: HttpContextContract): Promise<void> 
   {
-    try {
       await request.validate(PageValidator)
       
       response.ok(
@@ -24,89 +21,65 @@ export default class AuthorsController implements ResourceMethods {
           .select("*")
           .paginate(page, perPage)
       )
-    } catch (error) {
-      throw new LogicException(error.message, 422)
-    }
   }
 
   public async store({ request, response }: HttpContextContract): Promise<void> 
   {
-    try {
-      await request.validate(AuthorValidator)
-
-      response.ok(await Author.create(Object(request.all())))
-    } catch (error) {
-      throw new LogicException(error.message, 422)
-    }
+    await request.validate(AuthorValidator)
+    response.ok(await Author.create(Object(request.all())))
   }
 
   public async show({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    try {
-      params.type = "string"
-      await request.validate(ByIdValidator)
-      
-      response.ok(await Author.findOrFail(params.id))
-    } catch (error) {
-      throw new LogicException(error.message, 404)
-    }
+    params.type = "string"
+    await request.validate(ByIdValidator)
+    
+    response.ok(await Author.findOrFail(params.id))
   }
 
   public async update({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    try {
-      params.type = "string"
 
-      await request.validate(ByIdValidator)
-      await request.validate(AuthorUpdateValidator)
+    params.type = "string"
 
-      const props = request.all()
-      const authorUpdated = await Author.findOrFail(params.id)
+    await request.validate(ByIdValidator)
+    await request.validate(AuthorUpdateValidator)
 
-      for (let i in props)
-        authorUpdated[i] = props[i]
+    const props = request.all()
+    const authorUpdated = await Author.findOrFail(params.id)
 
-      response.ok(await authorUpdated.save())
-    } catch (error) {
-      throw new LogicException(error.message, 422)
-    }
+    for (let i in props)
+      authorUpdated[i] = props[i]
+
+    response.ok(await authorUpdated.save())
+
   }
 
   public async destroy({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    try {
-      params.type = "string"
-      await request.validate(ByIdValidator)
+    params.type = "string"
+    await request.validate(ByIdValidator)
 
-      await (await Author.findOrFail(params.id)).delete()
+    await (await Author.findOrFail(params.id)).delete()
 
-      response.ok({ deleted: true })
-
-    } catch (error) {
-      throw new LogicException(error.message, 404)
-    }
+    response.ok({ deleted: true })
   }
 
   public async publications({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    try {
-      params.type = "string"
-      
-      await request.validate(ByIdValidator)
-      await request.validate(PageValidator)
-      
-      const { id, page, perPage } = params
+    params.type = "string"
+    
+    await request.validate(ByIdValidator)
+    await request.validate(PageValidator)
+    
+    const { id, page, perPage } = params
 
-      response.ok(
-        await Author
-          .query()
-          .preload("publications")
-          .where("id", id)
-          .paginate(page, perPage)
-      )
-
-    } catch (error) {
-      throw new LogicException(error.message, 404)
-    }
+    response.ok(
+      await Author
+        .query()
+        .preload("publications")
+        .where("id", id)
+        .paginate(page, perPage)
+    )
   }
 }

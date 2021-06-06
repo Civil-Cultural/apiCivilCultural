@@ -1,7 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import UserAuth from 'App/Models/UserAuth';
 import UserAuthValidator from 'App/Validators/UserAuthValidator';
-import LogicException from 'App/Exceptions/LogicException';
 import address from 'address'
 
 export default class AuthController {
@@ -22,26 +21,19 @@ export default class AuthController {
             })
       )
     } catch (error) {
-      response.unauthorized({ error: 'Authentication failed' })
+      response.unauthorized({ error: 'Unauthenticated' })
     }
   }
 
-  public async logout({ response, auth }: HttpContextContract): Promise<void> {
-    try {
-      response.ok(await auth.logout())
-    } catch (error) {
-      throw new LogicException(error, 404);
-    }
+  public async logout({ response, auth }: HttpContextContract): Promise<void> 
+  {
+    response.ok(await auth.logout())
   }
 
-  public async store({ request, response }: HttpContextContract): Promise<void> {
-    try {
-      await request.validate(UserAuthValidator)
+  public async store({ request, response }: HttpContextContract): Promise<void> 
+  {    
+    await request.validate(UserAuthValidator)
+    response.ok(await UserAuth.create(Object(request.all())))
 
-      response.ok(await UserAuth.create(Object(request.all())))
-
-    } catch (error) {
-      throw new LogicException(error.message, 422)
-    }
   }
 }
