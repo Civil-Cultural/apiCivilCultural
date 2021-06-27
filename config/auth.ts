@@ -1,19 +1,13 @@
-/**
- * Config source: https://git.io/JvyKy
- *
- * Feel free to let us know via PR, if you find something broken in this config
- * file.
- */
-
 import { AuthConfig } from '@ioc:Adonis/Addons/Auth'
 
 const authConfig: AuthConfig = {
   guard: 'api',
-  list: {
-
+  guards: {
     api: {
       driver: 'oat',
+
       tokenProvider: {
+        type: 'api',
         driver: 'redis',
         redisConnection: 'local',
         foreignKey: 'user_id',
@@ -22,10 +16,8 @@ const authConfig: AuthConfig = {
       provider: {
         driver: 'lucid',
         identifierKey: 'id',
-        uids: ['email','password'],
+        uids: ['email', 'password'],
         model: () => import('App/Models/UserAuth'),
-        connection: 'pg',
-        hashDriver: 'argon'
       },
     },
   },

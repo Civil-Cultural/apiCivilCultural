@@ -6,7 +6,7 @@ export default class ByIdValidator {
   constructor (protected ctx: HttpContextContract) {
   }
 
-	public data: ById = <ById>this.ctx.params
+	public data = <ById>this.ctx.params
 	public reporter = validator.reporters.api
 
 	public schema  = schema.create({

@@ -1,12 +1,12 @@
 import { schema , rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { FavoriteCategoriesParam, FavoritePublicationsParam } from 'Contracts/validators'
+import { FavoritesCategoriesParam, FavoritesPublicationsParam } from 'Contracts/validators'
 
 export default class FavoriteParamValidator {
   constructor (protected ctx: HttpContextContract) {
   }
 
-	public data: FavoriteCategoriesParam | FavoritePublicationsParam = this.ctx.params
+	public data = <FavoritesCategoriesParam | FavoritesPublicationsParam>this.ctx.params
 
 	public reporter = validator.reporters.api
 	
@@ -16,10 +16,10 @@ export default class FavoriteParamValidator {
 		const typedSchema = { userId: schema.string({ trim: true }) }
 		
 		switch(this.data['type']) {
-			case 'favoriteCategories':
+			case 'favoritesCategories':
 				typedSchema['categoryId'] = schema.number([ rules.unsigned() ]) 
 				break;
-			case 'favoritePublications':
+			case 'favoritesPublications':
 				typedSchema['publicationId'] = schema.string({ trim: true })
 				break;
 			default:

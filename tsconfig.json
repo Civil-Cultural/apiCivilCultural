@@ -8,6 +8,7 @@
     "build"
   ],
   "compilerOptions": {
+    "experimentalDecorators": true,
     "outDir": "build",
     "rootDir": "./",
     "sourceMap": true,
@@ -23,6 +24,9 @@
       ],
       "Database/*": [
         "./database/*"
+      ],
+      "Commands/*": [
+        "./commands/*"
       ]
     },
     "types": [

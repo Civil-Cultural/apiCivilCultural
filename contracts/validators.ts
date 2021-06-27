@@ -20,14 +20,14 @@ export type ById = {
   type?: string
 }
 
-export type FavoriteCategoriesParam = {
+export type FavoritesCategoriesParam = {
   id: string;
   categoryId: number;
-  type?: string
+  type: string
 }
 
-export type FavoritePublicationsParam = {
+export type FavoritesPublicationsParam = {
   id: string;
   publicationId: string;
-  type?: string
+  type: string
 }

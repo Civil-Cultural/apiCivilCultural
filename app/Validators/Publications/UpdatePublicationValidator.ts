@@ -1,8 +1,8 @@
 import { schema, rules, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { StatePublicationsEnum, TypePublicationsEnum } from 'Contracts/models'
+import { TypePublicationsEnum } from 'Contracts/models'
 
-export default class PublicationUpdateValidator {
+export default class UpdatePublicationValidator {
   constructor (protected ctx: HttpContextContract) {
   }
 
@@ -22,12 +22,12 @@ export default class PublicationUpdateValidator {
     }),
 
     image: schema.file.optional({
-      size: '3mb',
+      size: '5mb',
       extnames: ['png','jpg','jpeg','bmp','gif','diff']
     }),
 
     video: schema.file.optional({
-      size: '2mb',
+      size: '10mb',
       extnames: ['mp4','m4v','mov','avi']
     }),
 
@@ -35,17 +35,12 @@ export default class PublicationUpdateValidator {
       Object.values(TypePublicationsEnum)
     ),
 
-    statePublication: schema.enum.optional(
-      Object.values(StatePublicationsEnum)
+    authorId: schema.string.optional(
+      { trim: true },
+      [ rules.uuid() ]
     ),
 
-    authorId: schema.string.optional({
-      trim: true
-    }),
-
-    categoryId: schema.number.optional([
-      rules.unsigned()
-    ])
+    categories: schema.array.optional().members(schema.number())
   })
 
 	

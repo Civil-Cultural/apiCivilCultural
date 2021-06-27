@@ -6,7 +6,7 @@ export default class PageValidator {
 	constructor(protected ctx: HttpContextContract) {
 	}
 
-	public data: Page = <Page>this.ctx.params
+	public data = <Page>this.ctx.params
 
 	public reporter = validator.reporters.api
 

@@ -30,7 +30,7 @@ export default class AuthController {
     response.ok(await auth.logout())
   }
 
-  public async store({ request, response }: HttpContextContract): Promise<void> 
+  public async create({ request, response }: HttpContextContract): Promise<void> 
   {    
     await request.validate(UserAuthValidator)
     response.ok(await UserAuth.create(Object(request.all())))

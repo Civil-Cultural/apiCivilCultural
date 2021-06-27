@@ -1,26 +1,30 @@
-import { ResourceMethods } from "@ioc:Adonis/Core/Resource";
+import { ResourceMethods } from "@ioc:Adonis/Core/Resource"
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Hash from '@ioc:Adonis/Core/Hash'
 
-import User from "App/Models/User";
 
-import PageValidator from "App/Validators/PageValidator";
-import ByIdValidator from "App/Validators/ByIdValidator";
-import UserValidator from "App/Validators/User/UserValidator";
-import UserUpdateValidator from "App/Validators/User/UserUpdateValidator";
+import User from "App/Models/User"
+import { UserEnum } from "Contracts/models"
 
+import PageValidator from "App/Validators/PageValidator"
+import ByIdValidator from "App/Validators/ByIdValidator"
+import UserValidator from "App/Validators/Users/UserValidator"
+import UpdateUserValidator from "App/Validators/Users/UpdateUserValidator"
+import UserLoginValidator from "App/Validators/Users/UserLoginValidator"
 
 export default class UsersController implements ResourceMethods {
 
 
   public async login({ request, response }: HttpContextContract): Promise<void> 
   {
+    await request.validate(UserLoginValidator)
+
     const { email, password } = request.only(['email', 'password'])
 
     const user = await User
       .query()
       .where('email', email)
-      .firstOrFail();
+      .firstOrFail()
 
     if (!(await Hash.verify(user.password, password))) {
       return response.unauthorized({ error: 'Authentication failed' })
@@ -41,10 +45,11 @@ export default class UsersController implements ResourceMethods {
     )
   }
 
-  public async store({ request, response }: HttpContextContract): Promise<void> 
+  public async create({ request, response }: HttpContextContract): Promise<void> 
   {
     await request.validate(UserValidator)
-    response.ok(await User.create(Object(request.all())))
+    
+    response.ok(await User.create(Object({ typeUser:  UserEnum.GUEST, ...request.all()})))
   }
 
   public async show({ request, response, params }: HttpContextContract): Promise<void> 
@@ -61,7 +66,7 @@ export default class UsersController implements ResourceMethods {
     params.type = "string"
 
     await request.validate(ByIdValidator)
-    await request.validate(UserUpdateValidator)
+    await request.validate(UpdateUserValidator)
 
     const props = request.all()
     const userUpdate = await User.findOrFail(params.id)
@@ -78,8 +83,29 @@ export default class UsersController implements ResourceMethods {
 
     await request.validate(ByIdValidator)
 
-    await (await User.findOrFail(params.id)).delete()
+    let user = await User.findOrFail(params.id)
 
-    response.ok({ deleted: true })
+    await user.delete()
+
+    response.ok({ deleted: user.$isDeleted })
+  }
+
+  public async publications({request, response, params}: HttpContextContract): Promise<void>
+  {
+    params.type = 'string'
+
+    await request.validate(ByIdValidator)
+    await request.validate(PageValidator)
+
+    const { id, page, perPage } = params
+
+    response.ok(
+      await User
+        .query()
+        .where('id', id)
+        .andWhere('type_user', UserEnum.ADMIN)
+        .preload('publications')
+        .paginate(page, perPage)
+      )
   }
 }

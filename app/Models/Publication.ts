@@ -1,13 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm'
 
 import { StatePublicationsEnum, TypePublicationsEnum } from 'Contracts/models'
+import PublicationsTopic from 'App/Models/PublicationsTopic'
 
 export default class Publication extends BaseModel {
 
   public static table = "publications"
-
-  public static connection = "pg"
 
   @column({ isPrimary: true })
   public id: string
@@ -34,8 +33,11 @@ export default class Publication extends BaseModel {
   public statePublication: StatePublicationsEnum
 
   @column()
-  public authorId: string
+  authorId: string
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public publishedAt: DateTime
+
+  @hasOne(() => PublicationsTopic)
+  public publicationsTopics: HasOne<typeof PublicationsTopic>
 }

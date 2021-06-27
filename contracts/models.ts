@@ -1,10 +1,15 @@
   export enum TypePublicationsEnum {
-    NEWS = 1,
-    ARTICLE = 2
+    NEWS = 'news',
+    ARTICLE = 'article'
   }
   
   export enum StatePublicationsEnum {
-    APPROVED = 20,
-    VOTES = 30,
-    DISAPPROVED = 40
+    APPROVED = 'approved',
+    VOTES = 'votes',
+    DISAPPROVED = 'disapproved'
+  }
+
+  export enum UserEnum {
+    GUEST = 2540,
+    ADMIN = 2680
   }

@@ -4,6 +4,10 @@
   Informações relacionada a api. Rotas, nomes das rotas, arquivo de configurações etc. Se for um contribuidor deixe informações que você acha importante para outros contribuintes saberem como rodar em seu ambiente. Qualquer modificação nesse código e que esteja documentada nesse arquivo você deve atualiza-la (só se deve modificar o arquivo se as modificações no código forem para pull request). Não coloque informações sigilosas por exemplo informações da conexão do banco de dados. 
 </p>
 
+<p>
+  Para entender a estrutura da api leia a documentação do <a href='https://docs.adonisjs.com/'>AdonisJS V5</a>.
+</p>
+
 ****
 
 * [Rodar no Ambiente](#Rodar%20no%20Ambiente)
@@ -40,21 +44,27 @@ Execute `npm run/yarn build` depois `npm run/yarn start`
 |GET|/apicvcl/publications/:id|api.publications.show|sim|
 |PUT|/apicvcl/publications/:id|api.publications.update|sim|
 |DELETE|/apicvcl/publications/:id|api.publications.destroy|sim|
+|GET|/apicvcl/topics/:page/:perPage|api.topics.index|sim|
+|POST|/apicvcl/topics|api.topics.create|sim|
+|GET|/apicvcl/topics/:id|api.topics.show|sim|
+|PUT|/apicvcl/topics/:id|api.topics.update|sim|
+|DELETE|/apicvcl/topics/:id|api.topics.destroy|sim|
 |POST|/apicvcl/users/login|api.users.login|sim|
 |GET|/apicvcl/users/:page/:perPage|api.users.index|sim|
 |POST|/apicvcl/users|api.users.store|sim|
 |GET|/apicvcl/users/:id|api.users.show|sim|
 |PUT|/apicvcl/users/:id|api.users.update|sim|
 |DELETE|/apicvcl/users/:id|api.users.destroy|sim|
-|GET|/apicvcl/users/:id/categories/:page/:perPage|api.users.indexCategories|sim|
-|POST|/apicvcl/users/categories|api.users.storeCategories|sim|
-|GET|/apicvcl/users/categories/:userId/:categoryId|api.user.showCategories|sim|
-|DELETE|/apicvcl/users/categories/:userId/:categoryId|api.users.removeCategories|sim|
-|GET|/apicvcl/users/:id/publications/:page/:perPage|api.users.indexPublications|sim|
-|POST|/apicvcl/users/publications|api.users.storePublications|sim|
-|GET|/apicvcl/users/publications/:userId/:publicationId|api.user.showPublications|sim|
-|DELETE|/apicvcl/users/publications/:userId/:publicationId|api.users.removePublications|sim|
+|GET|/apicvcl/users/:id/publications/:page/:perPage|api.users.publications|sim|
+|GET|/apicvcl/users/:id/favoritescategories/:page/:perPage|api.users.indexCategories|sim|
+|POST|/apicvcl/users/favoritescategories|api.users.addCategories|sim|
+|GET|/apicvcl/users/favoritescategories/:userId/:categoryId|api.user.showCategories|sim|
+|DELETE|/apicvcl/users/favoritescategories/:userId/:categoryId|api.users.removeCategories|sim|
+|GET|/apicvcl/users/:id/favoritespublications/:page/:perPage|api.users.indexPublications|sim|
+|POST|/apicvcl/users/favoritespublications|api.users.addPublications|sim|
+|GET|/apicvcl/users/favoritespublications/:userId/:publicationId|api.user.showPublications|sim|
+|DELETE|/apicvcl/users/favoritespublications/:userId/:publicationId|api.users.removePublications|sim|
 |POST|/apicvcl/auth/login|api.auth.login|sim|
-|POST|/apicvcl/auth|api.auth.store|sim|
+|POST|/apicvcl/auth|api.auth.create|sim|
 |GET|/apicvcl/auth|api.auth.logout|sim|
-|GET|/apicvcl/status |api.auth.status|não|
+|GET|/apicvcl/status |api.db.status|não|

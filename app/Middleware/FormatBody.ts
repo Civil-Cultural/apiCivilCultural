@@ -4,13 +4,13 @@ export default class FormatBody {
   public async handle ({ request }: HttpContextContract, next: () => Promise<void>) {
     let newBody: object = {}
     
-    Object.entries(request.all()).map(v => {
-      v[1] = /^\d+$/.test(v[1]) ? Number(v[1]) : v[1]
-      let match = v[0].match(/_(.){1}/)?.shift()
+    Object.entries(request.all()).map(([key, value]) => {
+      value = !Array.isArray(value) && /^\d+$/.test(value) ? Number(value) : value
+      let match = key.match(/_(.){1}/)?.shift()
 
-      match = match ? v[0].replace(/_(.){1}/, match?.substring(1,match?.length).toUpperCase()) : v[0]
+      match = match ? key.replace(/_(.){1}/, match?.substring(1,match?.length).toUpperCase()) : key
       
-      newBody[match] = v[1]
+      newBody[match] = value
     })
 
     request.updateBody(newBody)

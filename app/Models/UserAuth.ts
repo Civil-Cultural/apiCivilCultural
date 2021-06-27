@@ -4,9 +4,8 @@ import Hash from '@ioc:Adonis/Core/Hash'
 
 
 export default class UserAuth extends BaseModel {
+  
   public static table = 'users_auth'
-
-  public static connection = 'pg'
 
   @column({ isPrimary: true })
   public id: number

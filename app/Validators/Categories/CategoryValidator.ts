@@ -11,9 +11,15 @@ export default class CategoryValidator {
 		name: schema.string(
 			{ trim: true }
 		),
+
 		description: schema.string(
 			{ trim: true }
-		)
+		),
+		
+		image: schema.file.optional({
+			size: '4mb',
+			extnames: ['webp', 'jpeg', 'jpg', 'bmp', 'gif', 'png' ] 
+		})
   })
 
   public messages = {

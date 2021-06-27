@@ -1,11 +1,12 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { ResourceMethods } from '@ioc:Adonis/Core/Resource'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 import Category from 'App/Models/Category'
+
 import PageValidator from 'App/Validators/PageValidator'
 import ByIdValidator from 'App/Validators/ByIdValidator'
 import CategoryValidator from 'App/Validators/Categories/CategoryValidator'
-import CategoryUpdateValidator from 'App/Validators/Categories/CategoryUpdateValidator'
+import UpdateCategoryValidator from 'App/Validators/Categories/UpdateCategoryValidator'
 
 export default class CategoriesController implements ResourceMethods {
 
@@ -21,7 +22,7 @@ export default class CategoriesController implements ResourceMethods {
     )
   }
 
-  public async store({ request, response }: HttpContextContract): Promise<void> 
+  public async create({ request, response }: HttpContextContract): Promise<void> 
   {
     await request.validate(CategoryValidator)
 
@@ -38,7 +39,7 @@ export default class CategoriesController implements ResourceMethods {
   public async update({ request, response, params: { id } }: HttpContextContract): Promise<void> 
   {
     await request.validate(ByIdValidator)
-    await request.validate(CategoryUpdateValidator)
+    await request.validate(UpdateCategoryValidator)
 
     const props = request.all()
     const categoryUpdate = await Category.findOrFail(id)
@@ -53,9 +54,11 @@ export default class CategoriesController implements ResourceMethods {
   {
     await request.validate(ByIdValidator)
 
-    await (await Category.findOrFail(id)).delete()
+    let category = await Category.findOrFail(id)
 
-    response.ok({ deleted: true })
+    await category.delete()
+
+    response.ok({ deleted: category.$isDeleted })
   }
 
   public async publications({ request, response, params }: HttpContextContract): Promise<void> 

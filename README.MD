@@ -20,7 +20,7 @@
 
 <p> Este poderá ser o último grande projeto no qual os humanos têm, pelo menos, a maior parte do controle sobre a informação dada. Já que a inteligência artificial é cada vez mais dominante com o tempo.</p>
 
-<p>Quase todos gostaram da ideia do projeto. E se você gosta da ideia e queira contribuir entre contato por e-mail civilcultural@memail.com ou entre no grupo do <a href='#'>Discord</a></p> 
+<p>Quase todos gostaram da ideia do projeto. E se você gosta da ideia e queira contribuir entre contato por e-mail civilcultural@memail.com ou entre em contato com <a href='https://discord.com'>astroo-#8040</a> pelo <a href='https://discord.com'>discord</a></p> 
 
 <h3>Situação atual do projeto</h3>
 

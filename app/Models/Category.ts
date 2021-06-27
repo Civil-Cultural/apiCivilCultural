@@ -4,8 +4,6 @@ import Publication from 'App/Models/Publication'
 export default class Category extends BaseModel {
   public static table = 'categories'
 
-  public static connection = 'pg'
-
   @column({ isPrimary: true })
   public id: number
 
@@ -19,7 +17,7 @@ export default class Category extends BaseModel {
   public image: string
 
   @manyToMany(() => Publication, {
-    pivotTable: 'publication_categories',
+    pivotTable: 'publications_categories',
     pivotForeignKey: 'category_id',
     pivotRelatedForeignKey: 'publication_id'
   })

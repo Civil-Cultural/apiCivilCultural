@@ -28,9 +28,9 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     super(Logger)
   }
 
-  public async handle({ code }: Exception,  { response }: HttpContextContract): Promise<void>
+  public async handle(ex: Exception,  { response }: HttpContextContract): Promise<void>
   {
-    let statusProps = await this.setStatusCode(code)
+    let statusProps = await this.setStatusCode(ex.code)
         
     response
       .status(statusProps.status)
@@ -44,11 +44,15 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     switch(code) {
       case 'E_VALIDATION_FAILURE': 
         statusCodeProps.status = 422; 
-        statusCodeProps.error = ExceptionHandler.statusJson[422]
+        statusCodeProps.error =  ExceptionHandler.statusJson[422]
         break;
       case 'E_ROUTE_NOT_FOUND':
         statusCodeProps.status = 404; 
         statusCodeProps.error = ExceptionHandler.statusJson[404]
+        break;
+      case 'E_ROW_NOT_FOUND':
+        statusCodeProps.status = 404,
+        statusCodeProps.error = 'Row not found'
         break;
       case 'E_UNAUTHORIZED_ACCESS':
         statusCodeProps.status = 401
@@ -61,10 +65,14 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     }
 
     return statusCodeProps
-  }
+  }Exception
 
-  public async report({message, name, status }: Exception , _: HttpContextContract): Promise<void>
+  public async report({message, name, status, stack  }: Exception  , _: HttpContextContract): Promise<void>
   {
-    if(Application.inDev) Logger.warn(`\n${name}: ${message}\nstatus: ${status}\n`)
+    if(Application.inDev)  {
+      Logger.error(`\n${name}: ${message}\nstatus: ${status}`);
+
+      Logger.info(`${stack ?? ''}`)
+    }
   }
 }

@@ -25,13 +25,13 @@ export default class FavoritesController {
     response.ok(
       await User
         .query()
-        .preload('favoriteCategories')
+        .preload('favoritesCategories')
         .where('id', id)
         .paginate(page, perPage)
     )
   }
 
-  public async storeCategories({ request, response }: HttpContextContract): Promise<void>
+  public async addCategories({ request, response }: HttpContextContract): Promise<void>
   {
     await request.validate(FavoriteCategoryValidator)
 
@@ -40,7 +40,7 @@ export default class FavoritesController {
     const user: User = await User.findOrFail(userId)
 
     await user
-      .related('favoriteCategories')
+      .related('favoritesCategories')
       .save(await Category.findOrFail(categoryId))
 
 
@@ -48,16 +48,16 @@ export default class FavoritesController {
       await User
         .query()
         .preload(
-          'favoriteCategories',
+          'favoritesCategories',
           q => q.wherePivot('category_id', categoryId)
         )
-        .firstOrFail()
+        .first()
     )
   }
 
   public async showCategories({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    params.type = 'favoriteCategories'
+    params.type = 'favoritesCategories'
 
     await request.validate(FavoriteParamValidator)
 
@@ -65,8 +65,8 @@ export default class FavoritesController {
       await User
         .query()
         .where('id', params.userId)
-        .preload(
-          'favoriteCategories',
+        .whereDoesntHave(
+          'favoritesCategories',
           q => q.wherePivot('category_id', params.categoryId)
         )
         .firstOrFail()
@@ -75,14 +75,14 @@ export default class FavoritesController {
 
   public async removeCategories({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    params.type = 'favoriteCategories'
+    params.type = 'favoritesCategories'
 
     await request.validate(FavoriteParamValidator)
 
 
     const user: User = await User.findOrFail(params.userId)
 
-    await user.related('favoriteCategories').detach([params.categoryId]);
+    await user.related('favoritesCategories').detach([params.categoryId]);
 
     response.ok({ deleted: true })
   }
@@ -100,13 +100,13 @@ export default class FavoritesController {
     response.ok(
       await User
         .query()
-        .preload('favoritePublications')
+        .preload('favoritesPublications')
         .where('id', id)
         .paginate(page, perPage)
     )
   }
 
-  public async storePublications({ request, response }: HttpContextContract): Promise<void> 
+  public async addPublications({ request, response }: HttpContextContract): Promise<void> 
   {
     await request.validate(FavoritePublicationValidator)
 
@@ -115,7 +115,7 @@ export default class FavoritesController {
     const user: User = await User.findOrFail(userId)
 
     await user
-      .related('favoritePublications')
+      .related('favoritesPublications')
       .save(await Publication.findOrFail(publicationId))
 
 
@@ -123,16 +123,16 @@ export default class FavoritesController {
       await User
         .query()
         .preload(
-          'favoritePublications',
+          'favoritesPublications',
           q => q.wherePivot('publication_id', publicationId)
         )
-        .firstOrFail()
+        .first()
     )
   }
 
   public async showPublications({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    params.type = 'favoritePublications'
+    params.type = 'favoritesPublications'
 
     await request.validate(FavoriteParamValidator)
 
@@ -140,8 +140,8 @@ export default class FavoritesController {
       await User
         .query()
         .where('id', params.userId)
-        .preload(
-          'favoritePublications',
+        .whereHas(
+          'favoritesPublications',
           q => q.wherePivot('publication_id', params.publicationId)
         )
         .firstOrFail()
@@ -151,14 +151,15 @@ export default class FavoritesController {
 
   public async removePublications({ request, response, params }: HttpContextContract): Promise<void> 
   {
-    params.type = 'favoritePublications'
+    params.type = 'favoritesPublications'
 
     await request.validate(FavoriteParamValidator)
 
     const user = await User.findOrFail(params.userId)
 
-    await user.related('favoritePublications').detach([params.publicationId]);
+    await user.related('favoritesPublications').detach([params.publicationId]);
 
-    response.ok({ deleted: true })
+
+    response.ok({ deleted: user.$isDeleted })
   }
 }

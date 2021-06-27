@@ -1,7 +1,7 @@
 import { schema, validator } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class CategoryUpdateValidator {
+export default class UpdateCategoryValidator {
   constructor (protected ctx: HttpContextContract) {
   }
 
@@ -11,9 +11,15 @@ export default class CategoryUpdateValidator {
 		name: schema.string.optional(
 			{ trim: true }
 		),
+
 		description: schema.string.optional(
 			{ trim: true }
-		)
+		),
+		
+		image: schema.file.optional({
+			size: '4mb',
+			extnames: ['webp', 'jpeg', 'jpg', 'bmp', 'gif', 'png' ] 
+		})
   })
 
   public messages = {
