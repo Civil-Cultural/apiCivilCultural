@@ -20,10 +20,7 @@
 
 <p> Este poderá ser o último grande projeto no qual os humanos têm, pelo menos, a maior parte do controle sobre a informação dada. Já que a inteligência artificial é cada vez mais dominante com o tempo.</p>
 
-<p>Quase todos gostaram da ideia do projeto. E se você gosta da ideia e queira contribuir entre contato por e-mail civilcultural@memail.com ou entre em contato com <a href='https://discord.com'>astroo-#8040</a> pelo <a href='https://discord.com'>discord</a></p> 
+<p>Quase todos gostaram da ideia do projeto. E se você gosta da ideia e queira contribuir entre contato por e-mail <span>astro-unity@hushmail.com</span> ou entre no nosso grupo do <a href='https://discord.gg/GnrGP3Q35B'>discord</a></p> 
 
-<h3>Situação atual do projeto</h3>
-
-<p>O projeto está em modo limbo pela primeira vez. E poderá recorrer pela primeira vez a donativos para contratar programadores profissionais.</p>
 
 <a href='https://github.com/Civil-Cultural/apiCivilCultural/blob/master/LICENCE.MD'>© 2021 Civil Cultural</a>
